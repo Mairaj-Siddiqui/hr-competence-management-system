@@ -1,0 +1,31 @@
+﻿@model IEnumerable<HRProject.Models.Competence>
+
+@{
+    ViewData["Title"] = "Competences";
+}
+
+<h2 class="mb-3">Competences</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">
+        ➕ Add New Competence
+    </a>
+</p>
+
+<table class="table table-striped table-bordered mt-3">
+    <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>

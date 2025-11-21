@@ -1,9 +1,11 @@
 ﻿using HRProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRProject.Controllers
 {
+    [Authorize(Roles = "Admin,HR")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
