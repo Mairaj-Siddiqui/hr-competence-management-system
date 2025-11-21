@@ -1,0 +1,93 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    /* Full-page background with proper centering */
+    .login-page-bg {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #74b9ff 0%, #00d2d3 100%);
+        display: flex;
+        align-items: center; /* vertical center */
+        justify-content: center; /* horizontal center */
+        padding: 20px;
+    }
+
+    /* Login Card */
+    .login-card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 450px; /* perfect width */
+        width: 100%;
+        padding: 40px;
+    }
+</style>
+
+<div class="login-page-bg">
+
+    <div class="login-card">
+        <h1 class="text-center mb-4" style="color: #4a90e2;">
+            🔒 @ViewData["Title"]
+        </h1>
+        <hr class="mb-4" />
+
+        <form id="account" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Email -->
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control"
+                       autocomplete="username" aria-required="true"
+                       placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control"
+                       autocomplete="current-password" aria-required="true"
+                       placeholder="password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <!-- Remember me -->
+            <div class="form-check mb-4">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label class="form-check-label text-muted" asp-for="Input.RememberMe">
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+
+            <!-- Login button -->
+            <button id="login-submit" type="submit"
+                    class="w-100 btn btn-lg btn-info text-white fw-bold">
+                Sign In
+            </button>
+
+            <!-- Links -->
+            <div class="d-flex justify-content-between mt-3 small">
+                <a asp-page="./ForgotPassword" class="text-secondary">Forgot password?</a>
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                   class="text-primary fw-bold">Register</a>
+            </div>
+
+            <p class="text-center small mt-2">
+                <a asp-page="./ResendEmailConfirmation" class="text-muted">
+                    Resend confirmation email
+                </a>
+            </p>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Assign Role";
+}
+
+<div class="page-bg">
+    <div class="role-card">
+        <h2 class="text-center mb-4 role-title">
+            🔐 Assign Role to User
+        </h2>
+
+        <hr />
+
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">User Email</label>
+                <input name="email" class="form-control form-control-lg"
+                       placeholder="user@example.com" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Role Name</label>
+                <input name="roleName" class="form-control form-control-lg"
+                       placeholder="Admin, HR, ProjectManager, Employee" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
+                Assign Role
+            </button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-info text-center mt-3">
+                @ViewBag.Message
+            </div>
+        }
+    </div>
+</div>

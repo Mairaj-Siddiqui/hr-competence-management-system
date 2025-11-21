@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Create Role";
+}
+
+<style>
+    .page-bg {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #74b9ff 0%, #00d2d3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .role-card {
+        background: #fff;
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .role-title {
+        color: #4a90e2;
+        font-weight: 600;
+    }
+</style>
+
+<div class="page-bg">
+
+    <div class="role-card">
+        <h2 class="text-center mb-4 role-title">
+            👤 Create New Role
+        </h2>
+
+        <hr />
+
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Role Name</label>
+                <input name="roleName"
+                       class="form-control form-control-lg"
+                       placeholder="Enter role name (e.g., Admin, Manager)" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
+                Create Role
+            </button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-success text-center mt-3">
+                @ViewBag.Message
+            </div>
+        }
+    </div>
+
+</div>
