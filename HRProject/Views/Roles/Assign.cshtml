@@ -2,37 +2,319 @@
     ViewData["Title"] = "Assign Role";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    .page-bg {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .page-bg::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .page-bg::after {
+            content: '';
+            position: absolute;
+            bottom: -15%;
+            left: -5%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+    .role-card {
+        background: white;
+        border-radius: 30px;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        max-width: 550px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    .role-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .role-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+        .role-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+    .role-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .role-subtitle {
+        color: #718096;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #e2e8f0 50%, transparent 100%);
+        border: none;
+        margin: 2rem 0;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #718096;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .form-label i {
+            color: #667eea;
+            font-size: 1rem;
+        }
+
+    .input-wrapper {
+        position: relative;
+        margin-bottom: 1.75rem;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 1rem 1rem 1rem 3.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafbff;
+    }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+        }
+
+    .input-icon {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #667eea;
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+
+    .role-suggestions {
+        background: linear-gradient(135deg, #f8f9fe 0%, #fdfbff 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 0.75rem;
+        border: 1px solid #e9ecef;
+    }
+
+    .role-suggestions-label {
+        font-size: 0.75rem;
+        color: #718096;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .role-tag {
+        display: inline-block;
+        padding: 0.4rem 0.9rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        color: #4a5568;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+        .role-tag:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary i {
+            margin-right: 0.5rem;
+        }
+
+    .alert {
+        border-radius: 14px;
+        border: none;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+    }
+
+    .alert i {
+        font-size: 1.5rem;
+    }
+
+    .back-link {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+        .back-link a {
+            color: #718096;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .back-link a:hover {
+                color: #667eea;
+            }
+</style>
+
 <div class="page-bg">
     <div class="role-card">
-        <h2 class="text-center mb-4 role-title">
-            🔐 Assign Role to User
-        </h2>
+        <div class="role-header">
+            <div class="role-icon">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <h2 class="role-title">Assign Role</h2>
+            <p class="role-subtitle">Grant permissions and access to users</p>
+        </div>
 
-        <hr />
+        <hr class="divider" />
 
         <form method="post">
-            <div class="mb-3">
-                <label class="form-label fw-bold">User Email</label>
-                <input name="email" class="form-control form-control-lg"
-                       placeholder="user@example.com" />
+            <div class="input-wrapper">
+                <label class="form-label">
+                    <i class="bi bi-person-badge"></i>
+                    User Email
+                </label>
+                <i class="bi bi-envelope-fill input-icon"></i>
+                <input name="email"
+                       class="form-control"
+                       placeholder="user@example.com"
+                       type="email"
+                       required />
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Role Name</label>
-                <input name="roleName" class="form-control form-control-lg"
-                       placeholder="Admin, HR, ProjectManager, Employee" />
+            <div class="input-wrapper">
+                <label class="form-label">
+                    <i class="bi bi-award"></i>
+                    Role Name
+                </label>
+                <i class="bi bi-tag-fill input-icon"></i>
+                <input name="roleName"
+                       class="form-control"
+                       placeholder="Enter role name"
+                       required />
+
+                <div class="role-suggestions">
+                    <div class="role-suggestions-label">Common Roles</div>
+                    <span class="role-tag" onclick="document.querySelector('[name=roleName]').value='Admin'">
+                        <i class="bi bi-star-fill"></i> Admin
+                    </span>
+                    <span class="role-tag" onclick="document.querySelector('[name=roleName]').value='HR'">
+                        <i class="bi bi-people-fill"></i> HR
+                    </span>
+                    <span class="role-tag" onclick="document.querySelector('[name=roleName]').value='ProjectManager'">
+                        <i class="bi bi-diagram-3-fill"></i> ProjectManager
+                    </span>
+                    <span class="role-tag" onclick="document.querySelector('[name=roleName]').value='Employee'">
+                        <i class="bi bi-person-fill"></i> Employee
+                    </span>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle-fill"></i>
                 Assign Role
             </button>
         </form>
 
         @if (!string.IsNullOrEmpty(ViewBag.Message))
         {
-            <div class="alert alert-info text-center mt-3">
-                @ViewBag.Message
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>@ViewBag.Message</span>
             </div>
         }
+
+        <div class="back-link">
+            <a href="/">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
     </div>
 </div>
