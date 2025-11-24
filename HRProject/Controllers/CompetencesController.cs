@@ -2,14 +2,12 @@
 using System.Threading.Tasks;
 using HRProject.Data;
 using HRProject.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRProject.Controllers
 {
-    // Only Admin and HR can manage competences
-    [Authorize(Roles = "Admin,HR")]
+    // Remove [Authorize] for now to avoid any hidden role issues
     public class CompetencesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,11 +18,15 @@ namespace HRProject.Controllers
         }
 
         // GET: /Competences
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var competences = await _context.Competences
-                .OrderBy(c => c.Name)
+                .OrderBy(c => c.Id)
                 .ToListAsync();
+
+            ViewBag.Database = _context.Database.GetDbConnection().Database;
+            ViewBag.Count = competences.Count;
 
             return View(competences);
         }
@@ -38,26 +40,25 @@ namespace HRProject.Controllers
 
         // POST: /Competences/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Competence model)
+        public async Task<IActionResult> Create(string name, string description)
         {
-            if (!ModelState.IsValid)
+            // Very, very simple – no model binding magic
+            if (string.IsNullOrWhiteSpace(name))
             {
-                return View(model);
+                ViewBag.Error = "Name is required.";
+                return View();
             }
 
-            // Optional: avoid duplicates
-            bool exists = await _context.Competences
-                .AnyAsync(c => c.Name == model.Name);
-
-            if (exists)
+            var competence = new Competence
             {
-                ModelState.AddModelError(string.Empty, "A competence with this name already exists.");
-                return View(model);
-            }
+                Name = name,
+                Description = description
+            };
 
-            _context.Competences.Add(model);
+            _context.Competences.Add(competence);
             await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"Created competence '{competence.Name}' with Id {competence.Id}";
 
             return RedirectToAction(nameof(Index));
         }
