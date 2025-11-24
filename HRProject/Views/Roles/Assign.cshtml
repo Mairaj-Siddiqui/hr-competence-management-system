@@ -302,7 +302,7 @@
             </button>
         </form>
 
-        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        @if (ViewBag.Message != null && !string.IsNullOrEmpty(ViewBag.Message.ToString()))
         {
             <div class="alert alert-info">
                 <i class="bi bi-info-circle-fill"></i>
