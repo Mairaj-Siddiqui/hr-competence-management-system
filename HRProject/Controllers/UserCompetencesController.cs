@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRProject.Controllers
 {
-    // [Authorize(Roles = "Admin,HR")]  // you can re-enable later if you like
+    /// [Authorize(Roles = "Admin,HR")]  // you can re-enable later if you like
     public class UserCompetencesController : Controller
     {
         private readonly ApplicationDbContext _context;
