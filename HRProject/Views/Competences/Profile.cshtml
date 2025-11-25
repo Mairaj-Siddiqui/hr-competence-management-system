@@ -1,0 +1,433 @@
+﻿@model HRProject.Models.UserCompetenceProfileViewModel
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    /* HERO SECTION */
+    .profile-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: 280px;
+        border-radius: 0 0 50px 50px;
+        position: relative;
+        margin-bottom: -80px;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        overflow: hidden;
+    }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .profile-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+    /* USER INFO CARD */
+    .user-info-card {
+        position: relative;
+        z-index: 10;
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        background: white;
+        margin-bottom: 2rem;
+    }
+
+    .user-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        font-weight: 700;
+        border: 6px solid white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        margin-top: -60px;
+    }
+
+    .user-info-body {
+        padding: 2rem 2.5rem;
+    }
+
+    .user-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-title {
+        font-size: 1.15rem;
+        color: #718096;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .user-email {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(135deg, #f8f9fe 0%, #fdfbff 100%);
+        border-radius: 12px;
+        color: #4a5568;
+        font-weight: 500;
+        border: 1px solid #e9ecef;
+    }
+
+        .user-email i {
+            color: #667eea;
+        }
+
+    /* COMPETENCE CARD */
+    .competence-card {
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        background: white;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #f8f9fe 0%, #fdfbff 100%);
+        padding: 1.75rem 2rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header-custom i {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+    .competence-card .card-body {
+        padding: 0;
+    }
+
+    /* TABLE STYLING */
+    .table-wrapper {
+        overflow: hidden;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
+            border-bottom: 2px solid #e9ecef;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #718096;
+            font-weight: 700;
+            padding: 1.25rem 2rem;
+        }
+
+        .table tbody td {
+            padding: 1.5rem 2rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .table tbody tr:hover {
+                background: linear-gradient(90deg, #f8f9fe 0%, #ffffff 100%);
+                transform: scale(1.005);
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .competence-name {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .competence-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    /* BADGES */
+    .badge-level {
+        font-size: 0.85rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        display: inline-block;
+    }
+
+    .badge-basic {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+    }
+
+    .badge-intermediate {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+    }
+
+    .badge-advanced {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+    }
+
+    /* EXPERIENCE DISPLAY */
+    .experience-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f7fafc;
+        border-radius: 10px;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+        .experience-badge i {
+            color: #667eea;
+        }
+
+    /* EMPTY STATE */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-state-icon {
+        font-size: 4.5rem;
+        color: #e2e8f0;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state-text {
+        color: #718096;
+        font-size: 1rem;
+    }
+
+    /* STATS ROW */
+    .stats-row {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, #f8f9fe 0%, #fdfbff 100%);
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .stat-item {
+        flex: 1;
+        text-align: center;
+        padding: 1rem;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #718096;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        margin-top: 0.25rem;
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <!-- HERO BACKGROUND -->
+    <div class="profile-hero"></div>
+</div>
+
+<div class="container mb-5">
+    <!-- USER INFO CARD -->
+    <div class="card user-info-card">
+        <div class="user-info-body text-center">
+            <div class="user-avatar mx-auto">
+                @(Model.FullName?.Substring(0, 1).ToUpper() ?? "U")
+            </div>
+            <h3 class="user-name mt-3">@Model.FullName</h3>
+            @if (!string.IsNullOrWhiteSpace(Model.JobTitle))
+            {
+                <div class="user-title justify-content-center">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>@Model.JobTitle</span>
+                </div>
+            }
+            <div class="user-email">
+                <i class="bi bi-envelope-fill"></i>
+                <span>@Model.UserEmail</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPETENCE CARD -->
+    <div class="card competence-card">
+        <div class="card-header-custom">
+            <h5>
+                <i class="bi bi-award-fill"></i>
+                <span>Competence Profile</span>
+            </h5>
+        </div>
+
+        @if (Model.Competences == null || !Model.Competences.Any())
+        {
+            <div class="card-body">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+                    <div class="empty-state-title">No Competences Assigned</div>
+                    <div class="empty-state-text">This user doesn't have any competences assigned yet.</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- STATS ROW -->
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Competences.Count()</span>
+                    <div class="stat-label">Total Skills</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Competences.Count(c => c.Level == HRProject.Models.CompetenceLevel.Advanced)</span>
+                    <div class="stat-label">Advanced</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Competences.Count(c => c.Level == HRProject.Models.CompetenceLevel.Intermediate)</span>
+                    <div class="stat-label">Intermediate</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Competences.Count(c => c.Level == HRProject.Models.CompetenceLevel.Basic)</span>
+                    <div class="stat-label">Basic</div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Competence</th>
+                            <th style="width: 200px;">Proficiency</th>
+                            <th style="width: 200px;">Experience</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var uc in Model.Competences)
+                        {
+                            string levelClass = uc.Level switch
+                            {
+                                HRProject.Models.CompetenceLevel.Basic => "badge-basic",
+                                HRProject.Models.CompetenceLevel.Intermediate => "badge-intermediate",
+                                HRProject.Models.CompetenceLevel.Advanced => "badge-advanced",
+                                _ => "badge-basic"
+                            };
+                            <tr>
+                                <td>
+                                    <div class="competence-name">
+                                        <div class="competence-icon">
+                                            <i class="bi bi-patch-check-fill"></i>
+                                        </div>
+                                        <span>@uc.Competence?.Name</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-level @levelClass">
+                                        @uc.Level.ToString()
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (uc.YearsOfExperience.HasValue)
+                                    {
+                                        <span class="experience-badge">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>@uc.YearsOfExperience years</span>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Not specified</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
