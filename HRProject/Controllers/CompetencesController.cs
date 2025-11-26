@@ -62,7 +62,5 @@ namespace HRProject.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        
     }
 }
