@@ -194,4 +194,5 @@ namespace HRProject.Controllers
             return View("~/Views/Competences/AllUserCompetences.cshtml", allUserCompetences);
 
         }
+    }
 }
