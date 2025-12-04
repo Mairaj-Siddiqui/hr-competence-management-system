@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251125104919_AddUserProfileFields")]
-    partial class AddUserProfileFields
+    [Migration("20251128151053_AddProjectsAndRequirements")]
+    partial class AddProjectsAndRequirements
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,28 @@ namespace HRProject.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Competences");
+                });
+
+            modelBuilder.Entity("HRProject.Models.MatchSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvailabilityWeight")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompetenceWeight")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExperienceWeight")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MatchSettings");
                 });
 
             modelBuilder.Entity("HRProject.Models.UserCompetence", b =>

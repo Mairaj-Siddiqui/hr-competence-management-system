@@ -57,6 +57,10 @@ namespace HRProject.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Full name")]
+            public string FullName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -71,6 +75,8 @@ namespace HRProject.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -88,10 +94,19 @@ namespace HRProject.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                // set username + email
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
+                // 👇 set full name on ApplicationUser
+                if (user is ApplicationUser appUser)
+                {
+                    appUser.FullName = Input.FullName;
+                }
+
+                // now create user
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
 
                 if (result.Succeeded)
                 {

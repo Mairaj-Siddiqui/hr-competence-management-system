@@ -1,0 +1,36 @@
+﻿@model IEnumerable<HRProject.Models.Project>
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<h2 class="mb-3">Projects</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Name</td>
+                    <td>@p.StartDate.ToShortDateString()</td>
+                    <td>@(p.EndDate.HasValue? p.EndDate.Value.ToShortDateString() : "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No projects defined yet.</p>
+}

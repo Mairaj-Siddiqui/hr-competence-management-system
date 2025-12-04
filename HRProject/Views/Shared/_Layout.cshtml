@@ -1,80 +1,167 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using HRProject.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HR Project</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HRProject.styles.css" asp-append-version="true" />
 </head>
+
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HR Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-diagram-3"></i> HR Project
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Create">Add Role</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="mainNavbar">
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Assign">Assign Role</a>
-                        </li>
+                    <!-- LEFT NAV -->
+                    <ul class="navbar-nav me-auto">
 
+                        <!-- Always visible -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Competences" asp-action="Index">Competences</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Assign">
-                                Assign Competence
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house"></i> Home
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Profile">User Profile</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="AllUserCompetences">
-                                All User Competences
+                        @* <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">
+                                <i class="bi bi-shield-lock"></i> Privacy
                             </a>
-                        </li>
+                        </li> *@
 
+                        <!-- Admin-only items -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Roles" asp-action="Create">
+                                    <i class="bi bi-plus-circle"></i> Add Role
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Roles" asp-action="Assign">
+                                    <i class="bi bi-person-check"></i> Assign Role
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="MatchSettings" asp-action="Edit">
+                                    <i class="bi bi-sliders"></i> Match Settings
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                    <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                </a>
+                            </li>
+                            <!-- Competence-related menu -->
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Competences" asp-action="Index">
+                                    <i class="bi bi-lightbulb"></i> Competences
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="UserCompetences" asp-action="Assign">
+                                    <i class="bi bi-award"></i> Assign Competence
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="UserCompetences" asp-action="Profile">
+                                    <i class="bi bi-person"></i> User Profile
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="UserCompetences" asp-action="AllUserCompetences">
+                                    <i class="bi bi-collection"></i> All User Competences
+                                </a>
+                            </li>
+
+                        }
+
+                       
+                        
+                        <!-- Project & Requirements (visible to Admin, HR, PM, PL) -->
+                        @if (SignInManager.IsSignedIn(User) &&
+                                                (User.IsInRole("Admin")
+                                                || User.IsInRole("HR")
+                                                || User.IsInRole("ProjectManager")
+                                                || User.IsInRole("ProjectLeader")))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-folder"></i> Projects
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Projects" asp-action="Index">
+                                            <i class="bi bi-folder2-open"></i> Project List
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ProjectRequirements" asp-action="Index">
+                                            <i class="bi bi-list-check"></i> Requirements
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
+                        }
                     </ul>
+
+                    <!-- RIGHT SIDE (Login / Logout) -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- MAIN CONTENT -->
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-4">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - HRProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- FOOTER -->
+    <footer class="border-top footer text-muted mt-4">
+        <div class="container py-3">
+            &copy; 2025 - HR Project -
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
