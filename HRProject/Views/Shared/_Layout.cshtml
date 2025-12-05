@@ -112,24 +112,7 @@
                                                 || User.IsInRole("ProjectManager")
                                                 || User.IsInRole("ProjectLeader")))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-folder"></i> Projects
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Projects" asp-action="Index">
-                                            <i class="bi bi-folder2-open"></i> Project List
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ProjectRequirements" asp-action="Index">
-                                            <i class="bi bi-list-check"></i> Requirements
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                         }
 
                         }
