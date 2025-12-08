@@ -1,6 +1,8 @@
 ﻿namespace HRProject.Controllers
 {
-    public class ProfileController
+    public class EmployeeController
     {
+
+
     }
 }

@@ -16,10 +16,6 @@ namespace HRProject.Data
 
         public DbSet<MatchSettings> MatchSettings { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectRequirement> ProjectRequirements { get; set; }
-
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
