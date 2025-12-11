@@ -33,6 +33,8 @@ namespace HRProject.Controllers
                 TotalUsers = await _userManager.Users.CountAsync(),
                 TotalCompetences = await _context.Competences.CountAsync(),
                 TotalUserCompetences = await _context.UserCompetences.CountAsync()
+                //TotalProjects = await _context.Projects.CountAsync(),
+                //TotalProjectRequirements = await _context.ProjectRequirements.CountAsync()
             };
 
             return View(model); // Views/Admin/Index.cshtml
