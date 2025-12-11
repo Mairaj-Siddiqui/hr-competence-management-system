@@ -4,6 +4,7 @@ using HRProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128213104_TeamLeaderSystem")]
+    partial class TeamLeaderSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +31,6 @@ namespace HRProject.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AvailabilityPercent")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -106,9 +106,32 @@ namespace HRProject.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competences");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamGrowthPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Goal")
@@ -146,15 +169,6 @@ namespace HRProject.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RequiredCapacity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredDays")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredHours")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredMonths")
                         .HasColumnType("int");
 
                     b.Property<string>("TeamName")
@@ -205,8 +219,7 @@ namespace HRProject.Data.Migrations
 
                     b.Property<string>("Importance")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LevelNeeded")
                         .HasColumnType("int");
@@ -221,28 +234,6 @@ namespace HRProject.Data.Migrations
                     b.HasIndex("TeamLeaderId");
 
                     b.ToTable("TeamSkillNeeds");
-                });
-
-            modelBuilder.Entity("HRProject.Models.MatchSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AvailabilityWeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompetenceWeight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ExperienceWeight")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MatchSettings");
                 });
 
             modelBuilder.Entity("HRProject.Models.UserCompetence", b =>

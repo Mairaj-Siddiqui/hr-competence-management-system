@@ -1,0 +1,27 @@
+﻿@model IEnumerable<HRProject.Models.ApplicationUser>
+
+@{
+    int teamId = ViewBag.TeamId;
+}
+
+<h2>Add Team Member</h2>
+
+<form method="post" action="/TeamLeader/AddMember">
+    <input type="hidden" name="teamId" value="@teamId" />
+
+    <div class="form-group">
+        <label>Select User</label>
+        <select name="userId" class="form-control">
+            @foreach (var user in Model)
+            {
+                <option value="@user.Id">@user.FullName (@user.Email)</option>
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-success mt-3">Add Member</button>
+</form>
+<a href="/TeamLeader/Dashboard/@teamId" class="btn btn-secondary mt-3">
+    ← Back to Dashboard
+</a>
+
