@@ -10,7 +10,11 @@ namespace HRProject.Models
 
         public int AvailabilityPercent { get; set; } = 100; // 0–100, default fully available
 
-        public ICollection<UserCompetence> UserCompetences { get; set; }
+        public string? Certificates { get; set; }      // plain text list
+        public string? Languages { get; set; }        // plain text list
+        public string? Interests { get; set; }        // what projects they like
+
+        public ICollection<UserCompetence> UserCompetences { get; set; } = new List<UserCompetence>();
 
     }
 }
