@@ -2,5 +2,85 @@
     ViewData["Title"] = "Create Project";
 }
 
-<h1>Create Project</h1>
-<p>This is the create project page. Add your form here.</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="project-header-bg">
+    <div class="project-header-content">
+        <h2><i class="bi bi-folder-plus me-2"></i>Create New Project</h2>
+        <p>Define skills, roles, experience, and timelines to build the perfect team.</p>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+
+    <div class="project-form-wrapper p-4">
+
+        <form method="post">
+
+            <!-- Project Name -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Project Name</label>
+                <input type="text" class="form-control project-input" name="ProjectName" required />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Project Description</label>
+                <textarea class="form-control project-input" name="Description" rows="4"></textarea>
+            </div>
+
+            <!-- Skills -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Required Skills</label>
+                <input type="text" class="form-control project-input"
+                       placeholder="Example: C#, Azure, UX Design"
+                       name="Skills" required />
+            </div>
+
+            <!-- Roles + Amount -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Team Roles Needed</label>
+                <input type="text" class="form-control project-input"
+                       placeholder="Example: 2 Developers, 1 Designer"
+                       name="RolesNeeded" required />
+            </div>
+
+            <!-- Dates -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Start Date</label>
+                    <input type="date" class="form-control project-input" name="StartDate" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">End Date</label>
+                    <input type="date" class="form-control project-input" name="EndDate" required />
+                </div>
+            </div>
+
+            <!-- Experience -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Required Experience Level</label>
+                <select class="form-select project-input" name="ExperienceLevel" required>
+                    <option>Junior</option>
+                    <option>Mid</option>
+                    <option>Senior</option>
+                    <option>Expert</option>
+                </select>
+            </div>
+
+            <!-- Working Style -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Preferred Working Style</label>
+                <textarea class="form-control project-input"
+                          placeholder="Example: Independent, collaborative, detail-oriented"
+                          name="WorkingStyle"></textarea>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary px-4">Create Project</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>

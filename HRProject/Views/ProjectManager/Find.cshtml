@@ -2,5 +2,107 @@
     ViewData["Title"] = "Find Team Members";
 }
 
-<h1>Find Team Members</h1>
-<p>This is the page where team members will be shown.</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<!-- HEADER -->
+<div class="team-header-bg">
+    <div class="team-header-content">
+        <h2><i class="bi bi-people-fill me-2"></i>Find Team Members</h2>
+        <p>Discover the best matches based on skills, experience, and availability.</p>
+    </div>
+</div>
+
+<div class="container mt-4 mb-5">
+
+    <!-- FILTER PANEL -->
+    <div class="filter-wrapper p-4 mb-4">
+        <h4 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>Search Filters</h4>
+
+        <form method="get" class="row gy-3">
+
+            <!-- Search by name -->
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Search By Name</label>
+                <input type="text" class="form-control project-input" placeholder="Example: John, Emma, Michael" name="searchName" />
+            </div>
+
+            <!-- Filter by skill -->
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Required Skill</label>
+                <input type="text" class="form-control project-input" placeholder="Example: C#, Azure, Photoshop" name="skill" />
+            </div>
+
+            <!-- Availability -->
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Availability</label>
+                <select class="form-select project-input" name="availability">
+                    <option value="">Any Time</option>
+                    <option>Immediate</option>
+                    <option>1-2 Weeks</option>
+                    <option>Next Month</option>
+                </select>
+            </div>
+
+            <div class="col-12 text-end">
+                <button class="btn btn-primary px-4 mt-3"><i class="bi bi-search me-1"></i>Search</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- MATCH RESULTS -->
+    <h4 class="fw-bold mb-3">Top Matches</h4>
+
+    <div class="row g-4">
+
+        <!-- CANDIDATE CARD TEMPLATE (Repeat from Model) -->
+        <div class="col-md-6">
+            <div class="candidate-card p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold candidate-name">John Andersson</h5>
+                    <span class="match-badge">92% Match</span>
+                </div>
+
+                <p class="candidate-role mb-1"><i class="bi bi-briefcase me-1"></i>Senior C# Developer</p>
+                <p class="candidate-availability"><i class="bi bi-calendar-check me-1"></i>Available: Immediate</p>
+
+                <!-- SKILL MATCH ROW -->
+                <div class="skill-match-section mt-3">
+                    <p class="fw-bold">Skill Match Breakdown:</p>
+
+                    <div class="skill-match-item">
+                        <span>C#</span>
+                        <span class="match-yes">✔</span>
+                    </div>
+
+                    <div class="skill-match-item">
+                        <span>Azure</span>
+                        <span class="match-yes">✔</span>
+                    </div>
+
+                    <div class="skill-match-item">
+                        <span>React</span>
+                        <span class="match-no">✖</span>
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="text-end mt-3">
+                    <button class="btn btn-light compare-btn">
+                        <i class="bi bi-bar-chart-line me-1"></i>Compare
+                    </button>
+
+                    <button class="btn btn-primary">
+                        <i class="bi bi-person-plus me-1"></i>Select
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Repeat for other candidates -->
+
+    </div>
+</div>
