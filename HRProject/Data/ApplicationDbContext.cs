@@ -11,13 +11,15 @@ namespace HRProject.Data
         {
         }
 
+        // ====== YOUR TABLES ======
         public DbSet<Competence> Competences { get; set; }
         public DbSet<UserCompetence> UserCompetences { get; set; }
 
         public DbSet<MatchSettings> MatchSettings { get; set; }
 
-        //public DbSet<Project> Projects { get; set; }
-        //public DbSet<ProjectRequirement> ProjectRequirements { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectRequirement> ProjectRequirements { get; set; }
+
 
 
 
@@ -25,6 +27,7 @@ namespace HRProject.Data
         {
             base.OnModelCreating(builder);
 
+            // ================ USER COMPETENCE RELATIONS ==================
             builder.Entity<UserCompetence>()
                 .HasKey(uc => new { uc.UserId, uc.CompetenceId });
 
@@ -37,6 +40,23 @@ namespace HRProject.Data
                 .HasOne(uc => uc.Competence)
                 .WithMany(c => c.UserCompetences)
                 .HasForeignKey(uc => uc.CompetenceId);
+
+            // ================ TEAMLEADER RELATIONS ==================
+            builder.Entity<TeamLeader>()
+                .HasOne(t => t.LeaderUser)
+                .WithMany()
+                .HasForeignKey(t => t.LeaderUserId);
+
+            builder.Entity<TeamMember>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
+
+            builder.Entity<TeamMember>()
+                .HasOne(m => m.TeamLeader)
+                .WithMany(t => t.Members)
+                .HasForeignKey(m => m.TeamLeaderId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
