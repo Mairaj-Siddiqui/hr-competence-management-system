@@ -1,0 +1,42 @@
+﻿@model IEnumerable<HRProject.Models.TeamLeader>
+
+<h2>Your Teams</h2>
+
+<a class="btn btn-success mb-3" href="/TeamLeader/Create">Create New Team</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Team Name</th>
+            <th>Capacity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var team in Model)
+        {
+            <tr>
+                <td>@team.TeamName</td>
+                
+                <td>
+                    @(
+                                    (team.RequiredHours ?? 0) +
+                                    ((team.RequiredDays ?? 0) * 8) +
+                                    ((team.RequiredMonths ?? 0) * 160)
+                                    ) hours total
+                </td>
+
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/TeamLeader/Dashboard/@team.Id">Dashboard</a>
+
+                    <form method="post" action="/TeamLeader/Delete/@team.Id" style="display:inline;">
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this team?');">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

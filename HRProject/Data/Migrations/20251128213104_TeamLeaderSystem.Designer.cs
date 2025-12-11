@@ -4,6 +4,7 @@ using HRProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128213104_TeamLeaderSystem")]
+    partial class TeamLeaderSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,7 +131,7 @@ namespace HRProject.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Deadline")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Goal")
@@ -166,15 +169,6 @@ namespace HRProject.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RequiredCapacity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredDays")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredHours")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequiredMonths")
                         .HasColumnType("int");
 
                     b.Property<string>("TeamName")

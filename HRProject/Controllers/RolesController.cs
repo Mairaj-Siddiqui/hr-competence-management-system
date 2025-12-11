@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRProject.Controllers
 {
-    [Authorize(Roles = "Admin,HR")]
+    //Authorize(Roles = "Admin,HR")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

@@ -4,6 +4,7 @@ using HRProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251204105537_AddTeamCapacityFields")]
+    partial class AddTeamCapacityFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,13 +171,13 @@ namespace HRProject.Data.Migrations
                     b.Property<int>("RequiredCapacity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RequiredDays")
+                    b.Property<int>("RequiredDays")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RequiredHours")
+                    b.Property<int>("RequiredHours")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RequiredMonths")
+                    b.Property<int>("RequiredMonths")
                         .HasColumnType("int");
 
                     b.Property<string>("TeamName")
