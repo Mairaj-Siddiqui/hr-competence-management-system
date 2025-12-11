@@ -15,6 +15,12 @@ namespace HRProject.Data
         public DbSet<Competence> Competences { get; set; }
         public DbSet<UserCompetence> UserCompetences { get; set; }
 
+        public DbSet<MatchSettings> MatchSettings { get; set; }
+
+        
+
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

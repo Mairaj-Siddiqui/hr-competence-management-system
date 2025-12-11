@@ -33,6 +33,9 @@ namespace HRProject.Data.Migrations
                     b.Property<int>("AvailabilityPercent")
                         .HasColumnType("int");
 
+                    b.Property<string>("Certificates")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -47,7 +50,13 @@ namespace HRProject.Data.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Interests")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Languages")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
