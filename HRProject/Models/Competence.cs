@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace HRProject.Models
-{
+{//
     public class Competence
     {
         public int Id { get; set; }
