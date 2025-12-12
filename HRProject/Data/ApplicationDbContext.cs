@@ -17,8 +17,10 @@ namespace HRProject.Data
 
         public DbSet<MatchSettings> MatchSettings { get; set; }
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectRequirement> ProjectRequirements { get; set; }
+        public DbSet<TeamLeader> TeamLeaders { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TeamSkillNeed> TeamSkillNeeds { get; set; }
+        public DbSet<TeamGrowthPlan> TeamGrowthPlans { get; set; }
 
 
 
