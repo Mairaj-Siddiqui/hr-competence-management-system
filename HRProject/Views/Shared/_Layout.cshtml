@@ -20,34 +20,22 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-
-                <!-- Brand -->
-                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-diagram-3"></i> HR Project
-                </a>
-
-                <!-- Mobile Menu Toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HR Project</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <div class="collapse navbar-collapse" id="mainNavbar">
-
-                    <!-- LEFT NAV -->
-                    <ul class="navbar-nav me-auto">
-
-                        <!-- Always visible -->
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">
                                 <i class="bi bi-house"></i> Home
                             </a>
-                            @if (User.IsInRole("Employee"))
-                            {
-                                <a class="nav-link" asp-controller="Employee" asp-action="Index">
-                                    <i class="bi bi-house"></i> Employee
-                                </a>
-                            }
-
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="TeamLeader" asp-action="Index">
+                                <i class="bi bi-people"></i> Team Leader
+                            </a>
                         </li>
 
                         @* <li class="nav-item">
@@ -57,7 +45,7 @@
                         </li> *@
 
                         <!-- Admin-only items -->
-                        @if (User.IsInRole("Admin||Employee"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Roles" asp-action="Create">
@@ -66,10 +54,14 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Roles" asp-action="Assign">
-                                    <i class="bi bi-person-check"></i> Assign Role
+                                <a class="nav-link text-dark" asp-controller="HR" asp-action="Index">
+                                    <i class="bi bi-person-workspace"></i> HR
                                 </a>
                             </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Assign">Assign Role</a>
+                        </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="MatchSettings" asp-action="Edit">
@@ -82,31 +74,28 @@
                                     <i class="bi bi-speedometer2"></i> Admin Dashboard
                                 </a>
                             </li>
-                            <!-- Competence-related menu -->
+
+                        <li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="Competences" asp-action="Index">
+        <i class="bi bi-list-check"></i> Competences
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Assign">
+        <i class="bi bi-plus-circle"></i> Assign Competence
+    </a>
 
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Competences" asp-action="Index">
-                                    <i class="bi bi-lightbulb"></i> Competences
+                                <a class="nav-link text-dark" asp-controller="Empolyee" asp-action="Index">
+                                    <i class="bi bi-person-badge"></i> Empolyee
                                 </a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="UserCompetences" asp-action="Assign">
-                                    <i class="bi bi-award"></i> Assign Competence
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="UserCompetences" asp-action="Profile">
-                                    <i class="bi bi-person"></i> User Profile
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="UserCompetences" asp-action="AllUserCompetences">
-                                    <i class="bi bi-collection"></i> All User Competences
-                                </a>
-                            </li>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Profile">
+        <i class="bi bi-person-circle"></i> User Profile
+    </a>
+</li>
 
                         }
 
@@ -117,55 +106,28 @@
                                                 (User.IsInRole("Admin")
                                                 || User.IsInRole("HR")
                                                 || User.IsInRole("ProjectManager")
-                                                || User.IsInRole("ProjectLeader")
-                                                || User.IsInRole("Employee")))
+                                                || User.IsInRole("ProjectLeader")))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-folder"></i> Projects
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Projects" asp-action="Index">
-                                            <i class="bi bi-folder2-open"></i> Project List
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ProjectRequirements" asp-action="Index">
-                                            <i class="bi bi-list-check"></i> Requirements
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                         }
 
-                        }
                     </ul>
-
-                    <!-- RIGHT SIDE (Login / Logout) -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-
-    <!-- MAIN CONTENT -->
     <div class="container">
         <main role="main" class="pb-4">
             @RenderBody()
         </main>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container py-3">
-            &copy; 2025 - HR Project -
-            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - HRProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
-    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

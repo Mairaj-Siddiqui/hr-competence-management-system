@@ -1,0 +1,85 @@
+﻿@* This view uses the HRDashboardViewModel we created earlier *@
+@model HRProject.Models.HRDashboardViewModel
+
+@{
+    // Set the page title shown in the browser tab and (usually) in the layout
+    // Set the page title shown in the browser tab and (usually) in the layout
+
+    ViewData["Title"] = "HR Dashboard";
+}
+
+<div class="container mt-4">
+    @* Page heading *@
+    <h1 class="mb-4">HR Dashboard</h1>
+
+    @* Row of summary cards for the main KPIs *@
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card text-bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalEmployees)</h5>
+                    <p class="card-text fs-3 fw-bold">@Model.TotalEmployees</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalCompetences)</h5>
+                    <p class="card-text fs-3 fw-bold">@Model.TotalCompetences</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithCompetences)</h5>
+                    <p class="card-text fs-3 fw-bold">@Model.UsersWithCompetences</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithoutCompetences)</h5>
+                    <p class="card-text fs-3 fw-bold">@Model.UsersWithoutCompetences</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Section for Top Competences *@
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Top Competences</h3>
+
+            @if (Model.TopCompetences != null && Model.TopCompetences.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Competence</th>
+                            <th>Number of Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TopCompetences)
+                        {
+                            <tr>
+                                <td>@item.CompetenceName</td>
+                                <td>@item.UserCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No competence data available yet.</p>
+            }
+        </div>
+    </div>
+</div>
