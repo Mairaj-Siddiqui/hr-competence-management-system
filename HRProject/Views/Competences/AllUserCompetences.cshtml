@@ -1,0 +1,232 @@
+﻿@model IEnumerable<HRProject.Models.UserCompetence>
+@{
+    ViewData["Title"] = "All User Competences";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #667eea;
+        margin-bottom: 2rem;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+        border: none;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+    .table tbody td {
+        padding: 1.25rem 1rem;
+        vertical-align: middle;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        margin-right: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .competence-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f0f4ff;
+        border-radius: 20px;
+        color: #4f5bd5;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .level-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .experience-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #667eea;
+    }
+
+    .back-button {
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid #667eea;
+        color: #667eea;
+    }
+
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-5px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+</style>
+
+<div class="container-fluid px-4 py-4">
+    <div class="dashboard-header">
+        <h2 class="mb-2">
+            <i class="bi bi-person-badge me-3"></i>User Competence Dashboard
+        </h2>
+        <p class="mb-0 opacity-75">Comprehensive overview of team skills and expertise levels</p>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Team Member</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Competence</th>
+                        <th scope="col" class="text-center">Proficiency Level</th>
+                        <th scope="col" class="text-center">Experience</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var uc in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar">
+                                            @(uc.User.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark">@uc.User.FullName</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">
+                                        <i class="bi bi-envelope me-1"></i>@uc.User.Email
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="competence-tag">
+                                        <i class="bi bi-star-fill"></i>
+                                        @(uc.Competence?.Name ?? "N/A")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    @{
+                                        string badgeClass = GetLevelBadgeClass(uc.Level.ToString());
+                                    }
+                                    <span class="level-badge @badgeClass">@uc.Level</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="experience-indicator">
+                                        <i class="bi bi-clock-history"></i>
+                                        @(uc.YearsOfExperience ?? 0) years
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <h4>No Competence Data Available</h4>
+                                    <p class="text-muted">Start by adding user competences to see them here.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn back-button">
+            <i class="bi bi-arrow-left me-2"></i>Back to Home
+        </a>
+    </div>
+</div>
+
+@functions {
+    public string GetLevelBadgeClass(string level)
+    {
+        return level switch
+        {
+            "Expert" => "bg-danger text-white",
+            "Advanced" => "bg-warning text-dark",
+            "Intermediate" => "bg-info text-white",
+            "Beginner" => "bg-success text-white",
+            _ => "bg-secondary text-white",
+        };
+    }
+}

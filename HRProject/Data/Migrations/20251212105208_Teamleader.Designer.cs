@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251124100642_AddUserProfileFields")]
-    partial class AddUserProfileFields
+    [Migration("20251212105208_Teamleader")]
+    partial class Teamleader
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,12 @@ namespace HRProject.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AvailabilityPercent")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Certificates")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -47,7 +53,13 @@ namespace HRProject.Data.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Interests")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Languages")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -94,6 +106,198 @@ namespace HRProject.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("HRProject.Models.Competence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competences");
+                });
+
+            modelBuilder.Entity("HRProject.Models.MatchSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvailabilityWeight")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompetenceWeight")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExperienceWeight")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MatchSettings");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamGrowthPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TeamLeaderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamLeaderId");
+
+                    b.ToTable("TeamGrowthPlans");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamLeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LeaderUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RequiredCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RequiredDays")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RequiredHours")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RequiredMonths")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeaderUserId");
+
+                    b.ToTable("TeamLeaders");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TeamLeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamLeaderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeamMembers");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamSkillNeed", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompetenceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Importance")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LevelNeeded")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamLeaderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetenceId");
+
+                    b.HasIndex("TeamLeaderId");
+
+                    b.ToTable("TeamSkillNeeds");
+                });
+
+            modelBuilder.Entity("HRProject.Models.UserCompetence", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CompetenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YearsOfExperience")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CompetenceId");
+
+                    b.HasIndex("CompetenceId");
+
+                    b.ToTable("UserCompetences");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -233,6 +437,85 @@ namespace HRProject.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HRProject.Models.TeamGrowthPlan", b =>
+                {
+                    b.HasOne("HRProject.Models.TeamLeader", "TeamLeader")
+                        .WithMany("GrowthPlans")
+                        .HasForeignKey("TeamLeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeamLeader");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamLeader", b =>
+                {
+                    b.HasOne("HRProject.Models.ApplicationUser", "LeaderUser")
+                        .WithMany()
+                        .HasForeignKey("LeaderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LeaderUser");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamMember", b =>
+                {
+                    b.HasOne("HRProject.Models.TeamLeader", "TeamLeader")
+                        .WithMany("Members")
+                        .HasForeignKey("TeamLeaderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("HRProject.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeamLeader");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamSkillNeed", b =>
+                {
+                    b.HasOne("HRProject.Models.Competence", "Competence")
+                        .WithMany()
+                        .HasForeignKey("CompetenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRProject.Models.TeamLeader", "TeamLeader")
+                        .WithMany("SkillNeeds")
+                        .HasForeignKey("TeamLeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competence");
+
+                    b.Navigation("TeamLeader");
+                });
+
+            modelBuilder.Entity("HRProject.Models.UserCompetence", b =>
+                {
+                    b.HasOne("HRProject.Models.Competence", "Competence")
+                        .WithMany("UserCompetences")
+                        .HasForeignKey("CompetenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HRProject.Models.ApplicationUser", "User")
+                        .WithMany("UserCompetences")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competence");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -282,6 +565,25 @@ namespace HRProject.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HRProject.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("UserCompetences");
+                });
+
+            modelBuilder.Entity("HRProject.Models.Competence", b =>
+                {
+                    b.Navigation("UserCompetences");
+                });
+
+            modelBuilder.Entity("HRProject.Models.TeamLeader", b =>
+                {
+                    b.Navigation("GrowthPlans");
+
+                    b.Navigation("Members");
+
+                    b.Navigation("SkillNeeds");
                 });
 #pragma warning restore 612, 618
         }
