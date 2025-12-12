@@ -33,7 +33,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="TeamLeader" asp-action="Index">Team Leader</a>
+                            <a class="nav-link text-dark" asp-controller="TeamLeader" asp-action="Index">
+                                <i class="bi bi-people"></i> Team Leader
+                            </a>
                         </li>
 
                         @* <li class="nav-item">
@@ -51,27 +53,39 @@
                                 </a>
                             </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Create">Add Role</a>
-                        </li>
+                        
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Assign">Assign Role</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Competences" asp-action="Index">Competences</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="MatchSettings" asp-action="Edit">
+                                    <i class="bi bi-sliders"></i> Match Settings
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                    <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                </a>
+                            </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Assign">
-                                Assign Competence
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Profile">User Profile</a>
-                        </li>
+    <a class="nav-link text-dark" asp-controller="Competences" asp-action="Index">
+        <i class="bi bi-list-check"></i> Competences
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Assign">
+        <i class="bi bi-plus-circle"></i> Assign Competence
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="UserCompetences" asp-action="Profile">
+        <i class="bi bi-person-circle"></i> User Profile
+    </a>
+</li>
 
                         }
 
@@ -84,24 +98,7 @@
                                                 || User.IsInRole("ProjectManager")
                                                 || User.IsInRole("ProjectLeader")))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-folder"></i> Projects
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Projects" asp-action="Index">
-                                            <i class="bi bi-folder2-open"></i> Project List
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ProjectRequirements" asp-action="Index">
-                                            <i class="bi bi-list-check"></i> Requirements
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            
                         }
 
                     </ul>
