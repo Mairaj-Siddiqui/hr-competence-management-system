@@ -21,10 +21,9 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+//builder.Services.AddScoped<HRProject.Services.MatchService>();
 
 builder.Services.AddRazorPages();
-
-
 
 
 var app = builder.Build();

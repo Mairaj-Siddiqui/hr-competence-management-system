@@ -20,6 +20,7 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
+
     .hero-title {
         font-size: 3rem;
         font-weight: 700;
@@ -68,28 +69,30 @@
             Empowering HR teams to identify, organize, and develop employee skills with clarity and structure.
         </p>
 
-        <a asp-controller="Competences" asp-action="Index" class="btn btn-primary btn-large me-2">
+        @* <a asp-controller="Competences" asp-action="Index" class="btn btn-primary btn-large me-2">
             <i class="bi bi-lightbulb"></i> View Competences
         </a>
 
-        <a asp-controller="UserCompetences" asp-action="Assign" class="btn btn-outline-light btn-large">
+        <!-- Assign Competence -->
+        <a asp-controller="UserCompetences" asp-action="Assign" class="btn btn-outline-light btn-large me-2">
             <i class="bi bi-award"></i> Assign Competence
-        </a>
+        </a> *@
     </div>
 </div>
 
 <!-- BODY SECTION -->
+
 <div class="container section-content">
     <h2 class="text-center fw-bold mb-4">Why This HR Project Matters</h2>
 
     <p class="hr-paragraph text-center">
-         In modern organizations, understanding the **skills and capabilities of employees** is essential
-         for effective planning, talent development, and strategic growth.
-         This system provides HR teams with a clear and organized way to manage competences,
-         assign skill levels, and track employee expertise over time.
+        In modern organizations, understanding the <strong>skills and the capabilities of employees</strong> is essential
+        for effective planning, talent development, and strategic growth.
+        This system provides HR teams with a clear and organized way to manage competences,
+        assign skill levels, and track employee expertise over time.
         <br /><br />
         By centralizing competences and linking them directly to users,
         companies can improve workforce planning, identify skill gaps,
-        and make smarter decisions about training, project allocation, and career development.
+        and make smarter decisions about training, project allocation,and career development.
     </p>
-</div>
+

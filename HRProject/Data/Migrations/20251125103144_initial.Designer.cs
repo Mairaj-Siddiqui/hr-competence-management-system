@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251204074705_AddProjectTable")]
-    partial class AddProjectTable
+    [Migration("20251125103144_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,63 +117,6 @@ namespace HRProject.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Competences");
-                });
-
-            modelBuilder.Entity("HRProject.Models.ProjectManager", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProjectManagers");
-                });
-
-            modelBuilder.Entity("HRProject.Models.ProjectRequirement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompetenceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinLevel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinYearsOfExperience")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompetenceId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("ProjectRequirements");
                 });
 
             modelBuilder.Entity("HRProject.Models.UserCompetence", b =>
@@ -334,25 +277,6 @@ namespace HRProject.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HRProject.Models.ProjectRequirement", b =>
-                {
-                    b.HasOne("HRProject.Models.Competence", "Competence")
-                        .WithMany()
-                        .HasForeignKey("CompetenceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HRProject.Models.ProjectManager", "Project")
-                        .WithMany("Requirements")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Competence");
-
-                    b.Navigation("Project");
-                });
-
             modelBuilder.Entity("HRProject.Models.UserCompetence", b =>
                 {
                     b.HasOne("HRProject.Models.Competence", "Competence")
@@ -431,11 +355,6 @@ namespace HRProject.Data.Migrations
             modelBuilder.Entity("HRProject.Models.Competence", b =>
                 {
                     b.Navigation("UserCompetences");
-                });
-
-            modelBuilder.Entity("HRProject.Models.ProjectManager", b =>
-                {
-                    b.Navigation("Requirements");
                 });
 #pragma warning restore 612, 618
         }

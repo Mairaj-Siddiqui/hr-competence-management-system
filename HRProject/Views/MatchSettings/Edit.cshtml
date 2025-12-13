@@ -1,0 +1,467 @@
+﻿@model HRProject.Models.MatchSettings
+@{
+    ViewData["Title"] = "Match Settings";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    body {
+        background-color: #0a0e27;
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .settings-container {
+        max-width: 700px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .settings-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: #60a5fa;
+    }
+
+    .settings-title h2 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #f8fafc;
+    }
+
+    .settings-subtitle {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 0.95rem;
+    }
+
+    .total-weight-card {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        border: 1px solid #4c1d95;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .total-weight-card.invalid {
+            background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+            border-color: #991b1b;
+        }
+
+        .total-weight-card.valid {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            border-color: #047857;
+        }
+
+    .total-weight-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .total-weight-icon {
+        font-size: 1.5rem;
+        color: #ef4444;
+    }
+
+    .total-weight-card.valid .total-weight-icon {
+        color: #10b981;
+    }
+
+    .total-weight-text h4 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .total-weight-text p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #cbd5e1;
+    }
+
+    .total-weight-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        padding: 0.5rem 1.5rem;
+        border-radius: 12px;
+    }
+
+    .total-weight-card.valid .total-weight-value {
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+    }
+
+    .weight-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .weight-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+    .weight-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .weight-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .weight-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .weight-card:nth-child(1) .weight-icon {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+    }
+
+    .weight-card:nth-child(2) .weight-icon {
+        background: rgba(139, 92, 246, 0.15);
+        color: #8b5cf6;
+    }
+
+    .weight-card:nth-child(3) .weight-icon {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+    }
+
+    .weight-details h5 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .weight-description {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #94a3b8;
+    }
+
+    .weight-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: rgba(59, 130, 246, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+
+    .weight-card:nth-child(1) .weight-value {
+        color: #3b82f6;
+    }
+
+    .weight-card:nth-child(2) .weight-value {
+        color: #8b5cf6;
+    }
+
+    .weight-card:nth-child(3) .weight-value {
+        color: #10b981;
+    }
+
+    .slider-container {
+        position: relative;
+    }
+
+    .form-range {
+        width: 100%;
+        height: 8px;
+        background: #1e293b;
+        border-radius: 10px;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .form-range::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+    .weight-card:nth-child(2) .form-range::-webkit-slider-thumb {
+        background: #8b5cf6;
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    }
+
+    .weight-card:nth-child(2) .form-range::-moz-range-thumb {
+        background: #8b5cf6;
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    }
+
+    .weight-card:nth-child(3) .form-range::-webkit-slider-thumb {
+        background: #10b981;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .weight-card:nth-child(3) .form-range::-moz-range-thumb {
+        background: #10b981;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .form-range::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--value), #1e293b var(--value), #1e293b 100%);
+        height: 8px;
+        border-radius: 10px;
+    }
+
+    .btn-save {
+        width: 100%;
+        background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1.25rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+    }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+    .help-text {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-top: 2rem;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+        border: 1px solid #047857;
+        border-radius: 12px;
+        color: #d1fae5;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .text-danger {
+        color: #f87171 !important;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+</style>
+
+<div class="settings-container">
+    <div class="settings-header">
+        <div class="header-icon">
+            <i class="bi bi-sliders"></i>
+        </div>
+        <div class="settings-title">
+            <h2>Match Settings</h2>
+            <p class="settings-subtitle">Configure the weight distribution for candidate matching</p>
+        </div>
+    </div>
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>@ViewBag.SuccessMessage
+        </div>
+    }
+
+    <form asp-action="Edit" method="post" id="settingsForm">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div id="totalWeightCard" class="total-weight-card">
+            <div class="total-weight-info">
+                <i class="bi bi-exclamation-circle total-weight-icon"></i>
+                <div class="total-weight-text">
+                    <h4>Total Weight</h4>
+                    <p>Must equal 100%</p>
+                </div>
+            </div>
+            <div class="total-weight-value">
+                <span id="totalWeight">0</span>%
+            </div>
+        </div>
+
+        <div class="weight-card">
+            <div class="weight-header">
+                <div class="weight-info">
+                    <div class="weight-icon">
+                        <i class="bi bi-brain"></i>
+                    </div>
+                    <div class="weight-details">
+                        <h5>Competence Weight</h5>
+                        <p class="weight-description">Skills and qualifications relevance</p>
+                    </div>
+                </div>
+                <div class="weight-value">
+                    <span id="compValue">@(Model?.CompetenceWeight ?? 0)</span>%
+                </div>
+            </div>
+            <div class="slider-container">
+                <input asp-for="CompetenceWeight"
+                       type="range"
+                       class="form-range"
+                       min="0"
+                       max="100"
+                       step="5"
+                       oninput="updateValues()" />
+                <span asp-validation-for="CompetenceWeight" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="weight-card">
+            <div class="weight-header">
+                <div class="weight-info">
+                    <div class="weight-icon">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <div class="weight-details">
+                        <h5>Experience Weight</h5>
+                        <p class="weight-description">Years of relevant work experience</p>
+                    </div>
+                </div>
+                <div class="weight-value">
+                    <span id="expValue">@(Model?.ExperienceWeight ?? 0)</span>%
+                </div>
+            </div>
+            <div class="slider-container">
+                <input asp-for="ExperienceWeight"
+                       type="range"
+                       class="form-range"
+                       min="0"
+                       max="100"
+                       step="5"
+                       oninput="updateValues()" />
+                <span asp-validation-for="ExperienceWeight" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="weight-card">
+            <div class="weight-header">
+                <div class="weight-info">
+                    <div class="weight-icon">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                    <div class="weight-details">
+                        <h5>Availability Weight</h5>
+                        <p class="weight-description">Candidate's schedule flexibility</p>
+                    </div>
+                </div>
+                <div class="weight-value">
+                    <span id="availValue">@(Model?.AvailabilityWeight ?? 0)</span>%
+                </div>
+            </div>
+            <div class="slider-container">
+                <input asp-for="AvailabilityWeight"
+                       type="range"
+                       class="form-range"
+                       min="0"
+                       max="100"
+                       step="5"
+                       oninput="updateValues()" />
+                <span asp-validation-for="AvailabilityWeight" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-save">
+            <i class="bi bi-save"></i> Save Settings
+        </button>
+    </form>
+
+    <p class="help-text">
+        Adjust the sliders to define how candidates are ranked during matching
+    </p>
+</div>
+
+<script>
+    function updateValues() {
+        const comp = parseInt(document.querySelector('[name="CompetenceWeight"]').value) || 0;
+        const exp = parseInt(document.querySelector('[name="ExperienceWeight"]').value) || 0;
+        const avail = parseInt(document.querySelector('[name="AvailabilityWeight"]').value) || 0;
+
+        document.getElementById('compValue').textContent = comp;
+        document.getElementById('expValue').textContent = exp;
+        document.getElementById('availValue').textContent = avail;
+
+        const total = comp + exp + avail;
+        document.getElementById('totalWeight').textContent = total;
+
+        const totalCard = document.getElementById('totalWeightCard');
+        totalCard.classList.remove('valid', 'invalid');
+
+        if (total === 100) {
+            totalCard.classList.add('valid');
+            totalCard.querySelector('.total-weight-icon').className = 'bi bi-check-circle-fill total-weight-icon';
+        } else {
+            totalCard.classList.add('invalid');
+            totalCard.querySelector('.total-weight-icon').className = 'bi bi-exclamation-circle total-weight-icon';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateValues();
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -12,7 +12,8 @@
 
         public CompetenceLevel Level { get; set; }
 
-        // Optional: years of experience in this skill
         public int? YearsOfExperience { get; set; }
+
+
     }
 }

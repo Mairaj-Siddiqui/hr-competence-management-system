@@ -1,7 +1,6 @@
 ﻿using HRProject.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace HRProject.Data
 {
@@ -12,15 +11,25 @@ namespace HRProject.Data
         {
         }
 
+        // ====== YOUR TABLES ======
         public DbSet<Competence> Competences { get; set; }
         public DbSet<UserCompetence> UserCompetences { get; set; }
-        public DbSet<ProjectManager> ProjectManagers { get; set; }
-        public DbSet<ProjectRequirement> ProjectRequirements { get; set; }
+
+        public DbSet<MatchSettings> MatchSettings { get; set; }
+
+        public DbSet<TeamLeader> TeamLeaders { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TeamSkillNeed> TeamSkillNeeds { get; set; }
+        public DbSet<TeamGrowthPlan> TeamGrowthPlans { get; set; }
+
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            // ================ USER COMPETENCE RELATIONS ==================
             builder.Entity<UserCompetence>()
                 .HasKey(uc => new { uc.UserId, uc.CompetenceId });
 
@@ -34,17 +43,22 @@ namespace HRProject.Data
                 .WithMany(c => c.UserCompetences)
                 .HasForeignKey(uc => uc.CompetenceId);
 
-            builder.Entity<ProjectRequirement>()
-                .HasOne(r => r.Project)
-                .WithMany(p => p.Requirements)
-                .HasForeignKey(r => r.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<ProjectRequirement>()
-                .HasOne(r => r.Competence)
+            // ================ TEAMLEADER RELATIONS ==================
+            builder.Entity<TeamLeader>()
+                .HasOne(t => t.LeaderUser)
                 .WithMany()
-                .HasForeignKey(r => r.CompetenceId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(t => t.LeaderUserId);
+
+            builder.Entity<TeamMember>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
+
+            builder.Entity<TeamMember>()
+                .HasOne(m => m.TeamLeader)
+                .WithMany(t => t.Members)
+                .HasForeignKey(m => m.TeamLeaderId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

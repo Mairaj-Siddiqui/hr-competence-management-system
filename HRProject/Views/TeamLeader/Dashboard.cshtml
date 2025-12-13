@@ -1,0 +1,135 @@
+﻿@model HRProject.Models.TeamLeader
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<h2>@Model.TeamName - Dashboard</h2>
+
+<!-- ACTION BUTTONS (BACK + EDIT) -->
+<div class="mb-3">
+    <a href="/TeamLeader/Index" class="btn btn-secondary me-2">
+        ← Back to My Teams
+    </a>
+
+    <a href="/TeamLeader/Edit/@Model.Id" class="btn btn-primary">
+        ✏️ Edit Team
+    </a>
+</div>
+
+<p>@Model.Description</p>
+
+<h4>Required Capacity:</h4>
+<ul>
+    <li>Hours: @Model.RequiredHours</li>
+    <li>Days: @Model.RequiredDays</li>
+    <li>Months: @Model.RequiredMonths</li>
+</ul>
+
+
+<hr />
+
+<!-- =======================
+     TEAM MEMBERS
+======================= -->
+
+<h3>Team Members</h3>
+
+<a href="/TeamLeader/AddMember/@Model.Id" class="btn btn-sm btn-success mb-2">
+    + Add Member
+</a>
+
+@if (Model.Members == null || !Model.Members.Any())
+{
+    <p>No members added yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var member in Model.Members)
+        {
+            <li>
+                @member.User.FullName (@member.User.Email)
+
+                <form method="post" action="/TeamLeader/DeleteMember" style="display:inline;">
+                    <input type="hidden" name="id" value="@member.Id" />
+                    <input type="hidden" name="teamId" value="@Model.Id" />
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
+
+<hr />
+
+<!-- =======================
+     MISSING SKILLS
+======================= -->
+
+<h3>Missing Skills</h3>
+
+<a href="/TeamLeader/AddSkillNeed/@Model.Id" class="btn btn-sm btn-warning mb-2">
+    + Add Missing Skill
+</a>
+
+@if (Model.SkillNeeds == null || !Model.SkillNeeds.Any())
+{
+    <p>No missing skills added yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var skill in Model.SkillNeeds)
+        {
+            <li>
+                @skill.Competence.Name
+                (Level: @skill.LevelNeeded, Importance: @skill.Importance)
+
+                <form method="post" action="/TeamLeader/DeleteSkillNeed" style="display:inline;">
+                    <input type="hidden" name="id" value="@skill.Id" />
+                    <input type="hidden" name="teamId" value="@Model.Id" />
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
+
+<hr />
+
+<!-- =======================
+     GROWTH PLAN
+======================= -->
+
+<h3>Growth Plan</h3>
+
+<a href="/TeamLeader/AddGrowthPlan/@Model.Id" class="btn btn-sm btn-info mb-2">
+    + Add Growth Plan
+</a>
+
+@if (Model.GrowthPlans == null || !Model.GrowthPlans.Any())
+{
+    <p>No growth plan entries.</p>
+}
+else
+{
+    <ul>
+        @foreach (var plan in Model.GrowthPlans)
+        {
+            <li>
+                <strong>@plan.Action</strong> —
+                @plan.Goal —
+                @plan.Deadline.ToString("dd-MM-yyyy") —
+                <em>@plan.Status</em>
+
+                <form method="post" action="/TeamLeader/DeleteGrowthPlan" style="display:inline;">
+                    <input type="hidden" name="id" value="@plan.Id" />
+                    <input type="hidden" name="teamId" value="@Model.Id" />
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        }
+    </ul>
+}
