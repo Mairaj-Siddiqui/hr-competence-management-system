@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-HRProject-a68902b3-5d02-4e7b-b212-4ba6b964b1f8</UserSecretsId>
-	  <NoWarn>NU1901;NU1902;NU1903;NU1904</NoWarn>
+	  
   </PropertyGroup>
 
   <ItemGroup>

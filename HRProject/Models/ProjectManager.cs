@@ -28,7 +28,11 @@ namespace HRProject.Models
             new List<ProjectRole>();
         public ICollection<ProjectRequirement> Requirements { get; set; }
             = new List<ProjectRequirement>();
-        
+        public ICollection<ProjectTeamMember> TeamMembers { get; set; } 
+            = new List<ProjectTeamMember>();
+
+
+
     }
 }
 

@@ -16,5 +16,7 @@ namespace HRProject.Models
 
         public ICollection<UserCompetence> UserCompetences { get; set; } = new List<UserCompetence>();
 
+        public ICollection<ProjectTeamMember> ProjectTeamMemberships { get; set; }
+            = new List<ProjectTeamMember>();
     }
 }
