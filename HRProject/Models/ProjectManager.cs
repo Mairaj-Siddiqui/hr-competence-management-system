@@ -20,9 +20,15 @@ namespace HRProject.Models
         [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
 
+        public string RequiredExperienceLevel { get; set; }
+        public string PreferredWorkingStyle { get; set; }
+
         // Navigation – one project has many requirements
+        public ICollection<ProjectRole> ProjectRoles { get; set; } =
+            new List<ProjectRole>();
         public ICollection<ProjectRequirement> Requirements { get; set; }
             = new List<ProjectRequirement>();
+        
     }
 }
 

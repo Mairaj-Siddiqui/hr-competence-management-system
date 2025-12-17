@@ -16,6 +16,11 @@ namespace HRProject.Data
         public DbSet<UserCompetence> UserCompetences { get; set; }
 
         public DbSet<MatchSettings> MatchSettings { get; set; }
+   
+        public DbSet<ProjectManager> ProjectManager { get; set; }
+        public DbSet<ProjectRole> ProjectRoles { get; set; }
+        public DbSet<ProjectRequirement> ProjectRequirementsNew { get; set; } 
+        public DbSet<ProjectTeamMember> ProjectTeamMembers { get; set; }
 
         public DbSet<TeamLeader> TeamLeaders { get; set; }
         public DbSet<TeamMember> TeamMembers { get; set; }
@@ -59,6 +64,29 @@ namespace HRProject.Data
                 .WithMany(t => t.Members)
                 .HasForeignKey(m => m.TeamLeaderId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // ================ PROJECTMANAGER RELATION ==================
+            builder.Entity<ProjectManager>()
+            .HasMany(p => p.ProjectRoles)
+            .WithOne(r => r.Project)
+            .HasForeignKey(r => r.ProjectId);
+
+            builder.Entity<ProjectManager>()
+                .HasMany(p => p.Requirements)
+                .WithOne(sr => sr.Project)
+                .HasForeignKey(sr => sr.ProjectId);
+
+            builder.Entity<ProjectTeamMember>()
+                .HasOne(pt => pt.Project)
+                .WithMany()
+                .HasForeignKey(pt => pt.ProjectId);
+
+            builder.Entity<ProjectTeamMember>()
+                .HasOne(pt => pt.User)
+                .WithMany()
+                .HasForeignKey(pt => pt.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }
