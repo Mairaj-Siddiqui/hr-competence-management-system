@@ -84,11 +84,18 @@
                         @foreach (var item in Model.TopCompetences)
                         {
                             <tr>
-                                <td>@item.CompetenceName</td>
+                                <td>
+                                    <a asp-controller="HR"
+                                       asp-action="CompetenceUsers"
+                                       asp-route-competenceName="@item.CompetenceName">
+                                        @item.CompetenceName
+                                    </a>
+                                </td>
                                 <td>@item.UserCount</td>
                             </tr>
                         }
                     </tbody>
+
                 </table>
             }
             else

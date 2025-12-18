@@ -90,5 +90,29 @@ namespace HRProject.Controllers                      // Same namespace pattern a
             // 3) Send the list to the view
             return View(usersWithoutCompetences);
         }
+
+        /// <summary>
+        /// Shows all users who have a specific competence (clicked from HR Dashboard).
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CompetenceUsers(string competenceName)
+        {
+            if (string.IsNullOrWhiteSpace(competenceName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var usersWithCompetence = await _context.UserCompetences
+                .Include(uc => uc.User)
+                .Include(uc => uc.Competence)
+                .Where(uc => uc.Competence.Name == competenceName)
+                .OrderBy(uc => uc.User.Email)
+                .ToListAsync();
+
+            ViewBag.CompetenceName = competenceName;
+
+            return View(usersWithCompetence);
+        }
+
     }
 }

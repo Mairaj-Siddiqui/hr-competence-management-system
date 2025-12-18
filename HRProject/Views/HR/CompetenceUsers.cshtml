@@ -1,0 +1,65 @@
+﻿@model List<HRProject.Models.UserCompetence>
+
+@{
+    ViewData["Title"] = "Competence Users";
+    var competenceName = ViewBag.CompetenceName as string;
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">Employees with competence: @competenceName</h1>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Job Title</th>
+                    <th>Availability (%)</th>
+                    <th>Level</th>
+                    <th>Years of Experience</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var uc in Model)
+                {
+                    <tr>
+                        <td>@(string.IsNullOrWhiteSpace(uc.User.FullName) ? "-" : uc.User.FullName)</td>
+                        <td>@uc.User.Email</td>
+                        <td>@(string.IsNullOrWhiteSpace(uc.User.JobTitle) ? "-" : uc.User.JobTitle)</td>
+                        <td>@uc.User.AvailabilityPercent</td>
+                        <td>@uc.Level</td>
+                        <td>@(uc.YearsOfExperience.HasValue? uc.YearsOfExperience.ToString() : "-")</td>
+                        <td>
+                            <a asp-controller="UserCompetences"
+                               asp-action="Assign"
+                               asp-route-email="@uc.User.Email"
+                               class="btn btn-sm btn-primary">
+                                Edit Competence
+                            </a>
+
+                            <a asp-controller="UserCompetences"
+                               asp-action="Profile"
+                               asp-route-email="@uc.User.Email"
+                               class="btn btn-sm btn-secondary ms-1">
+                                Profile
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            No users found with this competence.
+        </div>
+    }
+
+    <a asp-controller="HR" asp-action="Index" class="btn btn-secondary mt-3">
+        Back to HR Dashboard
+    </a>
+</div>
