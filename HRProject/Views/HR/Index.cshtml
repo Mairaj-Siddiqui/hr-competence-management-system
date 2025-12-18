@@ -2,9 +2,6 @@
 @model HRProject.Models.HRDashboardViewModel
 
 @{
-    // Set the page title shown in the browser tab and (usually) in the layout
-    // Set the page title shown in the browser tab and (usually) in the layout
-
     ViewData["Title"] = "HR Dashboard";
 }
 
@@ -14,41 +11,59 @@
 
     @* Row of summary cards for the main KPIs *@
     <div class="row">
+
+        @* 1) Total Employees -> Employee list *@
         <div class="col-md-3 mb-3">
-            <div class="card text-bg-primary">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalEmployees)</h5>
-                    <p class="card-text fs-3 fw-bold">@Model.TotalEmployees</p>
+            <a asp-controller="Employee" asp-action="Index" class="text-decoration-none">
+                <div class="card text-bg-primary h-100 shadow-sm" style="cursor:pointer;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalEmployees)</h5>
+                        <p class="card-text fs-3 fw-bold">@Model.TotalEmployees</p>
+                        <small class="opacity-75">Click to view employees</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        @* 2) Total Competences -> Competence catalog *@
         <div class="col-md-3 mb-3">
-            <div class="card text-bg-success">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalCompetences)</h5>
-                    <p class="card-text fs-3 fw-bold">@Model.TotalCompetences</p>
+            <a asp-controller="Competences" asp-action="Index" class="text-decoration-none">
+                <div class="card text-bg-success h-100 shadow-sm" style="cursor:pointer;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayNameFor(m => m.TotalCompetences)</h5>
+                        <p class="card-text fs-3 fw-bold">@Model.TotalCompetences</p>
+                        <small class="opacity-75">Click to manage competences</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        @* 3) Users With Competences -> All user competences *@
         <div class="col-md-3 mb-3">
-            <div class="card text-bg-info">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithCompetences)</h5>
-                    <p class="card-text fs-3 fw-bold">@Model.UsersWithCompetences</p>
+            <a asp-controller="UserCompetences" asp-action="AllUserCompetences" class="text-decoration-none">
+                <div class="card text-bg-info h-100 shadow-sm" style="cursor:pointer;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithCompetences)</h5>
+                        <p class="card-text fs-3 fw-bold">@Model.UsersWithCompetences</p>
+                        <small class="opacity-75">Click to view competence overview</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        @* 4) Users Without Competences -> Filtered list *@
         <div class="col-md-3 mb-3">
-            <div class="card text-bg-warning">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithoutCompetences)</h5>
-                    <p class="card-text fs-3 fw-bold">@Model.UsersWithoutCompetences</p>
+            <a asp-controller="HR" asp-action="EmployeesWithoutCompetences" class="text-decoration-none">
+                <div class="card text-bg-warning h-100 shadow-sm" style="cursor:pointer;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayNameFor(m => m.UsersWithoutCompetences)</h5>
+                        <p class="card-text fs-3 fw-bold">@Model.UsersWithoutCompetences</p>
+                        <small class="opacity-75">Click to find missing profiles</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
+
     </div>
 
     @* Section for Top Competences *@
@@ -62,7 +77,7 @@
                     <thead>
                         <tr>
                             <th>Competence</th>
-                            <th>Number of Users</th>
+                            <th>Number of Employees</th>
                         </tr>
                     </thead>
                     <tbody>
