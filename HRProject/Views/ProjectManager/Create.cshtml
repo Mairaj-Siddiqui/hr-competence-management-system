@@ -1,4 +1,6 @@
-﻿@{
+﻿@model HRProject.Models.ProjectManager
+
+@{
     ViewData["Title"] = "Create Project";
 }
 
@@ -12,75 +14,68 @@
 </div>
 
 <div class="container mt-5 mb-5">
-
     <div class="project-form-wrapper p-4">
-
-        <form method="post">
+        <form asp-action="Create" method="post">
 
             <!-- Project Name -->
             <div class="mb-4">
-                <label class="form-label fw-bold">Project Name</label>
-                <input type="text" class="form-control project-input" name="ProjectName" required />
+                <label asp-for="Name" class="form-label fw-bold">Project Name</label>
+                <input asp-for="Name" class="form-control project-input" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <!-- Description -->
             <div class="mb-4">
-                <label class="form-label fw-bold">Project Description</label>
-                <textarea class="form-control project-input" name="Description" rows="4"></textarea>
+                <label asp-for="Description" class="form-label fw-bold">Project Description</label>
+                <textarea asp-for="Description" class="form-control project-input" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <!-- Skills -->
             <div class="mb-4">
-                <label class="form-label fw-bold">Required Skills</label>
-                <input type="text" class="form-control project-input"
-                       placeholder="Example: C#, Azure, UX Design"
-                       name="Skills" required />
+                <label asp-for="Skills" class="form-label fw-bold">Required Skills</label>
+                <input asp-for="Skills" class="form-control project-input" placeholder="Example: C#, Azure, UX Design" />
+                <span asp-validation-for="Skills" class="text-danger"></span>
             </div>
 
-            <!-- Roles + Amount -->
+            <!-- Roles Needed -->
             <div class="mb-4">
-                <label class="form-label fw-bold">Team Roles Needed</label>
-                <input type="text" class="form-control project-input"
-                       placeholder="Example: 2 Developers, 1 Designer"
-                       name="RolesNeeded" required />
+                <label asp-for="RolesNeeded" class="form-label fw-bold">Team Roles Needed</label>
+                <input asp-for="RolesNeeded" class="form-control project-input" placeholder="Example: 2 Developers, 1 Designer" />
+                <span asp-validation-for="RolesNeeded" class="text-danger"></span>
             </div>
 
             <!-- Dates -->
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Start Date</label>
-                    <input type="date" class="form-control project-input" name="StartDate" required />
+                    <label asp-for="StartDate" class="form-label fw-bold">Start Date</label>
+                    <input asp-for="StartDate" type="date" class="form-control project-input" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">End Date</label>
-                    <input type="date" class="form-control project-input" name="EndDate" required />
+                    <label asp-for="EndDate" class="form-label fw-bold">End Date</label>
+                    <input asp-for="EndDate" type="date" class="form-control project-input" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
             </div>
 
-            <!-- Experience -->
+            <!-- Experience Level -->
             <div class="mb-4">
-                <label class="form-label fw-bold">Required Experience Level</label>
-                <select class="form-select project-input" name="ExperienceLevel" required>
+                <label asp-for="ExperienceLevel" class="form-label fw-bold">Required Experience Level</label>
+                <select asp-for="ExperienceLevel" class="form-select project-input">
                     <option>Junior</option>
                     <option>Mid</option>
                     <option>Senior</option>
                     <option>Expert</option>
                 </select>
+                <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
             </div>
 
-            <!-- Working Style -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">Preferred Working Style</label>
-                <textarea class="form-control project-input"
-                          placeholder="Example: Independent, collaborative, detail-oriented"
-                          name="WorkingStyle"></textarea>
-            </div>
-
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary px-4">Create Project</button>
-            </div>
-
+            <button type="submit" class="btn btn-primary px-4">Create Project</button>
         </form>
-
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

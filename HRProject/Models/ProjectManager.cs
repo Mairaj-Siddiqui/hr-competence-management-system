@@ -9,20 +9,30 @@ namespace HRProject.Models
         public int Id { get; set; }
 
         [Required, StringLength(200)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [StringLength(1000)]
         public string? Description { get; set; }
+        public string? Skills { get; set; }
+        public string? RolesNeeded { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
+        public string? ExperienceLevel { get; set; }
 
         // Navigation – one project has many requirements
+        public ICollection<ProjectRole> ProjectRoles { get; set; } =
+            new List<ProjectRole>();
         public ICollection<ProjectRequirement> Requirements { get; set; }
             = new List<ProjectRequirement>();
+        public ICollection<ProjectTeamMember> TeamMembers { get; set; } 
+            = new List<ProjectTeamMember>();
+
+
+
     }
 }
 
