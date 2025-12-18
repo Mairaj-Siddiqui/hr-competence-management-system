@@ -1,0 +1,57 @@
+﻿@model List<HRProject.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Employees Without Competences";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Employees Without Any Competence</h1>
+
+    <p class="text-muted">
+        These employees have not been assigned any competences yet. HR can follow up and assign competences.
+    </p>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Job Title</th>
+                    <th>Availability (%)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@(string.IsNullOrWhiteSpace(user.FullName) ? "-" : user.FullName)</td>
+                        <td>@user.Email</td>
+                        <td>@(string.IsNullOrWhiteSpace(user.JobTitle) ? "-" : user.JobTitle)</td>
+                        <td>@user.AvailabilityPercent</td>
+                        <td>
+                            <a asp-controller="UserCompetences"
+                               asp-action="Assign"
+                               asp-route-email="@user.Email"
+                               class="btn btn-sm btn-primary">
+                                Assign Competence
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-success">
+            🎉 Great! All employees currently have at least one competence.
+        </div>
+    }
+
+    <a asp-controller="HR" asp-action="Index" class="btn btn-secondary mt-3">
+        Back to HR Dashboard
+    </a>
+</div>
