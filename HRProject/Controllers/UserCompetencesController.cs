@@ -182,17 +182,34 @@ namespace HRProject.Controllers
         }
 
         // get all competence for all users - for admin/HR overview
-        [HttpGet]
+        //[HttpGet]
+        //public async Task<IActionResult> AllUserCompetences()
+        //{
+        //    var allUserCompetences = await _context.UserCompetences
+        //        .Include(uc => uc.User)
+        //        .Include(uc => uc.Competence)
+        //        .OrderBy(uc => uc.User.Email)
+        //        .ThenBy(uc => uc.Competence.Name)
+        //        .ToListAsync();
+        //    return View("~/Views/Competences/AllUserCompetences.cshtml", allUserCompetences);
+
+        //}
+
         public async Task<IActionResult> AllUserCompetences()
         {
-            var allUserCompetences = await _context.UserCompetences
-                .Include(uc => uc.User)
-                .Include(uc => uc.Competence)
-                .OrderBy(uc => uc.User.Email)
-                .ThenBy(uc => uc.Competence.Name)
+            var users = await _userManager.Users
+                .Include(u => u.UserCompetences)
+                    .ThenInclude(uc => uc.Competence)
+                .OrderBy(u => u.FullName)
                 .ToListAsync();
-            return View("~/Views/Competences/AllUserCompetences.cshtml", allUserCompetences);
 
+            return View("~/Views/Competences/AllUserCompetences.cshtml", users);
         }
+
+
+
+
     }
+    
+
 }
