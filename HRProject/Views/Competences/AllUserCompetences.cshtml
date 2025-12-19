@@ -1,194 +1,604 @@
-﻿@model IEnumerable<HRProject.Models.UserCompetence>
+﻿@model IEnumerable<HRProject.Models.ApplicationUser>
+@using System.Text
 @{
-    ViewData["Title"] = "All User Competences";
+    ViewData["Title"] = "Team Skills Overview";
+
+    var users = Model?.ToList() ?? new List<HRProject.Models.ApplicationUser>();
+    var totalUsers = users.Count;
+    var avgAvailability = totalUsers > 0 ? (int)Math.Round(users.Average(u => u.AvailabilityPercent)) : 0;
 }
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
 <style>
-    .dashboard-header {
+    * {
+        box-sizing: border-box;
+    }
+
+    .page-hero {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 12px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-card {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border-left: 4px solid #667eea;
-        margin-bottom: 2rem;
-    }
-
-    .table-card {
-        background: white;
-        border-radius: 12px;
+        border-radius: 20px;
+        color: #fff;
+        padding: 2.5rem 2.5rem;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        position: relative;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
     }
 
-    .table thead th {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        padding: 1rem;
-        border: none;
-    }
-
-    .table tbody tr {
-        transition: all 0.2s ease;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-        .table tbody tr:hover {
-            background-color: #f8f9ff;
-            transform: scale(1.01);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        .page-hero::before,
+        .page-hero::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
         }
 
-    .table tbody td {
-        padding: 1.25rem 1rem;
-        vertical-align: middle;
+        .page-hero::before {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
+        }
+
+        .page-hero::after {
+            width: 350px;
+            height: 350px;
+            bottom: -180px;
+            right: -180px;
+        }
+
+    .hero-title {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        font-size: 2rem;
+        position: relative;
+        z-index: 1;
     }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+    .kpi-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem 1.75rem;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+    .kpi-label {
+        font-size: 0.85rem;
+        color: #667eea;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .kpi-value {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #1a202c;
+        margin: 0;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .toolbar {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin: 1.5rem 0;
+    }
+
+    .search-wrap {
+        flex: 1;
+        min-width: 280px;
+        max-width: 600px;
+        position: relative;
+    }
+
+        .search-wrap i {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+    .search-input {
+        padding: 1rem 1rem 1rem 50px;
+        border-radius: 14px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.08);
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+            outline: none;
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid #e2e8f0;
+        color: #64748b;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+    .table-shell {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    table.team-table {
+        margin-bottom: 0;
+    }
+
+        table.team-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 1.25rem 1.5rem;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        table.team-table tbody td {
+            padding: 1.5rem;
+            vertical-align: middle;
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        table.team-table tbody tr.user-row {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+            table.team-table tbody tr.user-row:hover {
+                background: linear-gradient(to right, #f8f9ff 0%, #ffffff 100%);
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.12);
+                transform: translateX(4px);
+                border-left-color: #667eea;
+            }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: 600;
-        margin-right: 0.75rem;
-        font-size: 1rem;
+        color: #fff;
+        font-weight: 800;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
     }
 
-    .competence-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: #f0f4ff;
-        border-radius: 20px;
-        color: #4f5bd5;
-        font-weight: 500;
+    .name-line {
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: #1a202c;
+        margin-bottom: 0.25rem;
+    }
+
+    .muted {
+        color: #64748b;
         font-size: 0.9rem;
     }
 
-    .level-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .experience-indicator {
+    .pill {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #667eea;
+        border-radius: 10px;
+        padding: 0.5rem 0.85rem;
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        background: linear-gradient(to right, #ffffff 0%, #f8f9ff 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin: 0.25rem 0.35rem 0.25rem 0;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        transition: all 0.2s ease;
     }
 
-    .back-button {
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        .pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .pill i {
+            color: #667eea;
+            font-size: 0.85rem;
+        }
+
+    .lvl {
+        font-weight: 700;
+        border-radius: 6px;
+        padding: 0.25rem 0.65rem;
+        font-size: 0.75rem;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .lvl-basic {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+
+    .lvl-intermediate {
+        background: linear-gradient(135deg, #cfe2ff 0%, #b6d4fe 100%);
+        color: #084298;
+        border-color: #b6d4fe;
+    }
+
+    .lvl-advanced {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+        color: #664d03;
+        border-color: #ffe69c;
+    }
+
+    .availability {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+        .availability .bar {
+            width: 100px;
+            height: 12px;
+            background: linear-gradient(to right, #e2e8f0 0%, #f1f5f9 100%);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+            .availability .bar > span {
+                display: block;
+                height: 100%;
+                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                width: 0%;
+                border-radius: 999px;
+                box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+                transition: width 0.6s ease;
+            }
+
+    .details-row td {
+        padding-top: 0;
+        border-top: none;
+        background: linear-gradient(to bottom, #f8f9ff 0%, #ffffff 100%);
+    }
+
+    .details-card {
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        border-radius: 16px;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.08);
+        background: #fff;
+        margin: 0 1rem 1rem 1rem;
+    }
+
+    .details-title {
+        font-weight: 800;
+        font-size: 1.15rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #1a202c;
+    }
+
+        .details-title i {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1rem 1.5rem;
+    }
+
+    .ditem {
+        grid-column: span 6;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(to bottom, #ffffff 0%, #f8f9ff 100%);
+        transition: all 0.2s ease;
+    }
+
+        .ditem:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+        }
+
+        .ditem small {
+            display: block;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+    .dval {
+        font-weight: 700;
+        color: #1a202c;
+        font-size: 1rem;
+    }
+
+    
+
+    .empty {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: #64748b;
+    }
+
+        .empty i {
+            font-size: 4rem;
+            opacity: 0.4;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .empty h4 {
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+    .back-btn {
+        border-radius: 14px;
+        padding: 1rem 1.75rem;
+        font-weight: 700;
         border: 2px solid #667eea;
         color: #667eea;
+        transition: all 0.3s ease;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.1);
     }
 
-        .back-button:hover {
-            background: #667eea;
-            color: white;
-            transform: translateX(-5px);
-            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        .back-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            transform: translateX(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+            border-color: transparent;
         }
 
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #6c757d;
+    .table-responsive {
+        max-height: 65vh;
+        overflow-y: auto;
     }
 
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .table-responsive::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
         }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+            .table-responsive::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
 </style>
 
 <div class="container-fluid px-4 py-4">
-    <div class="dashboard-header">
-        <h2 class="mb-2">
-            <i class="bi bi-person-badge me-3"></i>User Competence Dashboard
-        </h2>
-        <p class="mb-0 opacity-75">Comprehensive overview of team skills and expertise levels</p>
+
+    <div class="page-hero">
+        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+            <div>
+                <h2 class="hero-title mb-0">
+                    <i class="bi bi-people-fill me-2"></i> Team Skills Overview
+                </h2>
+            </div>
+        </div>
     </div>
 
-    <div class="table-card">
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="bi bi-person me-1"></i> Users</div>
+                <div class="kpi-value">@totalUsers</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="bi bi-calendar-check me-1"></i> Avg Availability</div>
+                <div class="kpi-value">@avgAvailability%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input id="searchBox" class="form-control search-input"
+                   placeholder="Search by name, email, job title, competence..."
+                   autocomplete="off" />
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-3" onclick="clearSearch()">
+                <i class="bi bi-x-circle me-1"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <div class="table-shell">
         <div class="table-responsive">
-            <table class="table mb-0">
+            <table class="table team-table mb-0" id="usersTable">
                 <thead>
                     <tr>
-                        <th scope="col">Team Member</th>
-                        <th scope="col">Contact</th>
-                        <th scope="col">Competence</th>
-                        <th scope="col" class="text-center">Proficiency Level</th>
-                        <th scope="col" class="text-center">Experience</th>
+                        <th>Team Member</th>
+                        <th>Contact</th>
+                        <th>Job Title</th>
+                        <th class="text-center">Availability</th>
+                        <th>Competences (Level + Years)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (users.Any())
                     {
-                        @foreach (var uc in Model)
+                        foreach (var user in users)
                         {
-                            <tr>
+                            var fullName = string.IsNullOrWhiteSpace(user.FullName) ? "Unknown" : user.FullName;
+                            var initial = fullName.Substring(0, 1).ToUpper();
+                            var rowId = $"u_{user.Id.Replace("-", "")}";
+
+                            <tr class="user-row"
+                                data-rowid="@rowId"
+                                data-search="@BuildSearchText(user)">
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar">
-                                            @(uc.User.FullName?.Substring(0, 1).ToUpper() ?? "U")
-                                        </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="avatar">@initial</div>
                                         <div>
-                                            <div class="fw-bold text-dark">@uc.User.FullName</div>
+                                            <div class="name-line">@fullName</div>
+                                            <div class="muted">
+                                                <i class="bi bi-chevron-down me-1"></i><span>Click for details</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
+
                                 <td>
-                                    <span class="text-muted">
-                                        <i class="bi bi-envelope me-1"></i>@uc.User.Email
-                                    </span>
+                                    <div class="muted">
+                                        <div><i class="bi bi-envelope me-1"></i>@user.Email</div>
+                                    </div>
                                 </td>
+
                                 <td>
-                                    <span class="competence-tag">
-                                        <i class="bi bi-star-fill"></i>
-                                        @(uc.Competence?.Name ?? "N/A")
-                                    </span>
+                                    <div class="muted">
+                                        @(string.IsNullOrWhiteSpace(user.JobTitle) ? "—" : user.JobTitle)
+                                    </div>
                                 </td>
+
                                 <td class="text-center">
-                                    @{
-                                        string badgeClass = GetLevelBadgeClass(uc.Level.ToString());
+                                    <div class="availability justify-content-center">
+                                        <span>@user.AvailabilityPercent%</span>
+                                        <span class="bar" title="Availability">
+                                            <span style="width:@user.AvailabilityPercent%"></span>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (user.UserCompetences != null && user.UserCompetences.Any())
+                                    {
+                                        <div class="d-flex flex-wrap">
+                                            @foreach (var uc in user.UserCompetences
+                                                                            .OrderBy(x => x.Competence != null ? x.Competence.Name : ""))
+                                            {
+                                                var competenceName = uc.Competence?.Name ?? "N/A";
+                                                var years = uc.YearsOfExperience ?? 0;
+                                                var levelClass = GetLevelClass(uc.Level.ToString());
+
+                                                <span class="pill">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    <span>@competenceName</span>
+                                                    <span class="lvl @levelClass">@uc.Level</span>
+                                                    <span class="muted">(@years y)</span>
+                                                </span>
+                                            }
+                                        </div>
                                     }
-                                    <span class="level-badge @badgeClass">@uc.Level</span>
+                                    else
+                                    {
+                                        <span class="muted">No competences assigned</span>
+                                    }
                                 </td>
-                                <td class="text-center">
-                                    <span class="experience-indicator">
-                                        <i class="bi bi-clock-history"></i>
-                                        @(uc.YearsOfExperience ?? 0) years
-                                    </span>
+                            </tr>
+
+                            <tr class="details-row" id="@rowId" style="display:none;">
+                                <td colspan="5">
+                                    <div class="details-card">
+                                        <div class="details-title">
+                                            <i class="bi bi-person-lines-fill"></i>
+                                            Profile Details
+                                        </div>
+
+                                        <div class="details-grid">
+                                            <div class="ditem">
+                                                <small>Full Name</small>
+                                                <div class="dval">@fullName</div>
+                                            </div>
+
+                                            <div class="ditem">
+                                                <small>Email</small>
+                                                <div class="dval">@user.Email</div>
+                                            </div>
+
+                                            <div class="ditem">
+                                                <small>Job Title</small>
+                                                <div class="dval">@(!string.IsNullOrWhiteSpace(user.JobTitle) ? user.JobTitle : "—")</div>
+                                            </div>
+
+                                            <div class="ditem">
+                                                <small>Availability</small>
+                                                <div class="dval">@user.AvailabilityPercent%</div>
+                                            </div>
+
+                                            <div class="ditem">
+                                                <small>Languages</small>
+                                                <div class="dval">@(!string.IsNullOrWhiteSpace(user.Languages) ? user.Languages : "—")</div>
+                                            </div>
+
+                                            <div class="ditem">
+                                                <small>Certificates</small>
+                                                <div class="dval">@(!string.IsNullOrWhiteSpace(user.Certificates) ? user.Certificates : "—")</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -197,10 +607,10 @@
                     {
                         <tr>
                             <td colspan="5">
-                                <div class="empty-state">
+                                <div class="empty">
                                     <i class="bi bi-inbox"></i>
-                                    <h4>No Competence Data Available</h4>
-                                    <p class="text-muted">Start by adding user competences to see them here.</p>
+                                    <h4 class="mb-1">No Users Available</h4>
+                                    <div class="muted">Add users and assign competences to see them here.</div>
                                 </div>
                             </td>
                         </tr>
@@ -211,22 +621,90 @@
     </div>
 
     <div class="mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn back-button">
+        <a asp-controller="Home" asp-action="Index" class="btn back-btn">
             <i class="bi bi-arrow-left me-2"></i>Back to Home
         </a>
     </div>
 </div>
 
+<script>
+    const searchBox = document.getElementById('searchBox');
+
+    function rows() {
+        return document.querySelectorAll('#usersTable tbody .user-row');
+    }
+
+    function applySearch() {
+        const q = (searchBox.value || '').trim().toLowerCase();
+        rows().forEach(r => {
+            const hay = (r.getAttribute('data-search') || '').toLowerCase();
+            const rowId = r.getAttribute('data-rowid');
+            const details = document.getElementById(rowId);
+
+            const match = hay.includes(q);
+            r.style.display = match ? '' : 'none';
+
+            if (details) details.style.display = (match && details.getAttribute('data-open') === 'true') ? '' : 'none';
+        });
+    }
+
+    function clearSearch() {
+        searchBox.value = '';
+        applySearch();
+        searchBox.focus();
+    }
+
+    document.addEventListener('click', function (e) {
+        const row = e.target.closest('.user-row');
+        if (!row) return;
+
+        const rowId = row.getAttribute('data-rowid');
+        const details = document.getElementById(rowId);
+        if (!details) return;
+
+        const isOpen = details.style.display !== 'none';
+        if (isOpen) {
+            details.style.display = 'none';
+            details.setAttribute('data-open', 'false');
+        } else {
+            details.style.display = '';
+            details.setAttribute('data-open', 'true');
+        }
+    });
+
+    searchBox.addEventListener('input', applySearch);
+</script>
+
 @functions {
-    public string GetLevelBadgeClass(string level)
+    public string GetLevelClass(string level)
     {
         return level switch
         {
-            "Expert" => "bg-danger text-white",
-            "Advanced" => "bg-warning text-dark",
-            "Intermediate" => "bg-info text-white",
-            "Beginner" => "bg-success text-white",
-            _ => "bg-secondary text-white",
+            "Advanced" => "lvl-advanced",
+            "Intermediate" => "lvl-intermediate",
+            "Basic" => "lvl-basic",
+            _ => "lvl-intermediate",
         };
+    }
+
+    public string BuildSearchText(HRProject.Models.ApplicationUser u)
+    {
+        var sb = new StringBuilder();
+        sb.Append(u.FullName).Append(" ");
+        sb.Append(u.Email).Append(" ");
+        sb.Append(u.JobTitle).Append(" ");
+        sb.Append(u.Languages).Append(" ");
+        sb.Append(u.Certificates).Append(" ");
+
+        if (u.UserCompetences != null)
+        {
+            foreach (var uc in u.UserCompetences)
+            {
+                sb.Append(uc.Competence?.Name).Append(" ");
+                sb.Append(uc.Level).Append(" ");
+                sb.Append(uc.YearsOfExperience).Append(" ");
+            }
+        }
+        return sb.ToString();
     }
 }
