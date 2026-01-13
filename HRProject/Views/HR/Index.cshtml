@@ -7,7 +7,14 @@
 
 <div class="container mt-4">
     @* Page heading *@
-    <h1 class="mb-4">HR Dashboard</h1>
+    <h1 class="mb-2">HR Dashboard</h1>
+
+    @* === NEW: Skill Gap Analysis button (HR strategic view) === *@
+    <a asp-controller="HR"
+       asp-action="SkillGap"
+       class="btn btn-outline-primary mb-4">
+        Skill Gap Analysis
+    </a>
 
     @* Row of summary cards for the main KPIs *@
     <div class="row">
