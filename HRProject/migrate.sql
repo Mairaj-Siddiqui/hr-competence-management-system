@@ -378,20 +378,6 @@ COMMIT;
 GO
 
 BEGIN TRANSACTION;
-INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20251215151413_newtable', N'10.0.0');
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20251215153245_newTable2', N'10.0.0');
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
 CREATE TABLE [ProjectManager] (
     [Id] int NOT NULL IDENTITY,
     [Name] nvarchar(200) NOT NULL,
@@ -474,13 +460,6 @@ ALTER TABLE [ProjectManager] ADD [Skills] nvarchar(max) NULL;
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
 VALUES (N'20251218111137_AddProjectSync', N'10.0.0');
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20251219195629_projectmanager4tables', N'10.0.0');
 
 COMMIT;
 GO
