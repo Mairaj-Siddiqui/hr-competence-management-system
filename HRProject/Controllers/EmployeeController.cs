@@ -1,5 +1,6 @@
 ﻿using HRProject.Data;
 using HRProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,8 @@ namespace HRProject.Controllers
 
             return View(model);
         }
+        // POST: Delete
+        [Authorize(Roles = "Admin")]
 
         // GET: Delete
         public async Task<IActionResult> Delete(string id)
