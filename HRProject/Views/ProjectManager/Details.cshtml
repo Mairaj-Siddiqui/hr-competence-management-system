@@ -1,0 +1,56 @@
+﻿
+
+@model HRProject.Models.ProjectManager
+
+@{
+	ViewData["Title"] = "Project Details";
+
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold">@Model.Name</h2>
+    <p class="text-muted">@Model.Description</p>
+
+    <hr />
+
+    <h4>📋 Project Info</h4>
+    <ul>
+        <li><strong>Skills:</strong> @Model.Skills</li>
+        <li><strong>Roles Needed:</strong> @Model.RolesNeeded</li>
+        <li><strong>Experience Level:</strong> @Model.ExperienceLevel</li>
+        <li><strong>Start Date:</strong> @Model.StartDate.ToShortDateString()</li>
+        <li><strong>End Date:</strong> @Model.EndDate.ToShortDateString()</li>
+    </ul>
+
+    <hr />
+
+    <h4>👥 Team Members</h4>
+
+    @if (Model.TeamMembers == null || !Model.TeamMembers.Any())
+    {
+        <p class="text-muted">No team members assigned yet.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var member in Model.TeamMembers)
+            {
+                <li class="list-group-item">
+                    <strong>@member.User.UserName</strong> – @member.AssignedRole
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="mt-4">
+        <a asp-action="AssignUser"
+           asp-route-projectId="@Model.Id"
+           class="btn btn-outline-primary">
+            Assign User
+        </a>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back to Projects
+        </a>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+﻿
+@{
+
+    ViewData["Title"] = "Assign User to Project";
+}
+
+ <div class="container mt-5">
+    <h2 class="mb-4">Assign User to Project</h2>
+
+    <form asp-action="AssignUser" method="post">
+        <input type="hidden" name="projectId" value="@ViewBag.ProjectId" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Select User</label>
+            <select name="userId" class="form-select" required>
+                @foreach (var user in ViewBag.Users)
+                {
+                    <option value="@user.Id">@user.UserName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Role in Project</label>
+            <input type="text" name="role" class="form-control" placeholder="Developer, Designer..." />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Assign User</button>
+    </form>
+</div>

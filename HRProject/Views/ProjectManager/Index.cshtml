@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<HRProject.Models.ProjectManager>
+
+@{
     ViewData["Title"] = "Project Manager";
 }
 
@@ -19,7 +21,6 @@
                class="btn btn-outline-light btn-lg">
                 Find Team Members
             </a>
-
         </div>
     </div>
 </div>
@@ -31,18 +32,16 @@
     </p>
 </div>
 
-<div class="container">
+<div class="container mb-5">
     <div class="row g-4">
-
         <div class="col-md-4">
             <div class="card shadow-sm p-3">
                 <h4>📌 Creating Projects</h4>
                 <ul>
                     <li>Define required skills</li>
-                    <li>Specify needed roles (e.g., 2 devs, 1 designer)</li>
+                    <li>Specify needed roles</li>
                     <li>Select project dates</li>
-                    <li>Describe required experience</li>
-                    <li>Working style / personality preferences</li>
+                    <li>Describe experience level</li>
                 </ul>
             </div>
         </div>
@@ -51,12 +50,9 @@
             <div class="card shadow-sm p-3">
                 <h4>🔍 Finding Team Members</h4>
                 <ul>
-                    <li>Ranked candidates with % match</li>
-                    <li>Explanation for match quality</li>
+                    <li>Ranked candidates</li>
                     <li>Availability timeline</li>
-                    <li>Skill maps</li>
-                    <li>Alternative suggestions</li>
-                    <li>Side-by-side comparison</li>
+                    <li>Skill comparison</li>
                 </ul>
             </div>
         </div>
@@ -65,11 +61,66 @@
             <div class="card shadow-sm p-3">
                 <h4>📊 Reports</h4>
                 <ul>
-                    <li>Export project requirements to Excel</li>
-                    <li>Generate matching reports</li>
+                    <li>Export to Excel</li>
+                    <li>Matching reports</li>
                 </ul>
             </div>
         </div>
-
     </div>
+</div>
+
+<hr class="my-5" />
+
+<!-- ✅ PROJECT LIST SECTION -->
+<div class="container mb-5">
+    <h2 class="fw-bold mb-4">📋 Saved Projects</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No projects have been created yet.
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Skills</th>
+                    <th>Roles</th>
+                    <th>Experience</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@project.Name</td>
+                        <td>@project.Skills</td>
+                        <td>@project.RolesNeeded</td>
+                        <td>@project.ExperienceLevel</td>
+                        <td>@project.StartDate.ToShortDateString()</td>
+                        <td>@project.EndDate.ToShortDateString()</td>
+                        <td>
+                            <a asp-action="AssignUser"
+                               asp-route-projectId="@project.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Assign User
+                            </a>
+
+                            <a asp-action="Details"
+                               asp-route-id="@project.Id"
+                               class="btn btn-sm btn-outline-secondary me-2">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>
