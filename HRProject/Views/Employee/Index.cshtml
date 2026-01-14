@@ -1,10 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
-@model IEnumerable<HRProject.Models.ApplicationUser>
+﻿@model IEnumerable<HRProject.Models.ApplicationUser>
 
 @{
     ViewData["Title"] = "Employees";
@@ -12,9 +6,14 @@
 
 <h2>Employees</h2>
 
-<div class="mb-3">
-    <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">+ Add Employee</a>
-</div>
+@if (User.IsInRole("Admin"))
+{
+    <div class="mb-3">
+        <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">
+            + Add Employee
+        </a>
+    </div>
+}
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -41,11 +40,26 @@
                 <td>@user.Certificates</td>
                 <td>@user.Interests</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <a asp-action="Edit"
+                       asp-route-id="@user.Id"
+                       class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete"
+                           asp-route-id="@user.Id"
+                           class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+
+
+ 
