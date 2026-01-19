@@ -50,6 +50,7 @@ body {
     .transition-card:hover {
         transform: translateY(-6px);
         box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+        font-weight:bold;
     }
 
 .transition-img {
