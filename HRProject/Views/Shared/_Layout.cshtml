@@ -89,7 +89,7 @@
                             </li>
                         }
 
-                        @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("HR"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="ProjectManager" asp-action="Index">
