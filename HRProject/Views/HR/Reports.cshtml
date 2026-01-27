@@ -1,0 +1,129 @@
+﻿@model HRProject.Models.HRChartsViewModel
+@{
+    ViewData["Title"] = "HR Reports";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">HR Reports</h1>
+    <p class="text-muted">Visual overview of competence distribution and skill coverage.</p>
+    <a asp-controller="HR"
+       asp-action="ExportTeamSkillsCsv"
+       class="btn btn-success mb-3">
+        Export Team Skills (Excel)
+    </a>
+
+    <div class="row g-4">
+        <!-- Bar chart -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Competence Distribution</h5>
+                    <canvas id="barChart" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Skills vs Employees (Heatmap)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle" id="heatmapTable">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    @foreach (var c in Model.HeatmapCompetenceLabels)
+                                    {
+                                        <th class="text-center">@c</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.EmployeeLabels.Count; i++)
+                                {
+                                    <tr>
+                                        <td style="white-space:nowrap;">@Model.EmployeeLabels[i]</td>
+                                        @for (int j = 0; j < Model.HeatmapCompetenceLabels.Count; j++)
+                                        {
+                                            var val = Model.HeatmapMatrix[i][j];
+                                            <td class="text-center heat-cell" data-val="@val">
+                                                @if (val == 0)
+                                                {
+                                                    <span class="text-muted">—</span>
+                                                }
+                                                else if (val == 1)
+                                                {
+                                                    <span>Basic</span>
+                                                }
+                                                else if (val == 2)
+                                                {
+                                                    <span>Interm.</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Adv.</span>
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <small class="text-muted">
+                        Legend: 0 = none, 1 = Basic, 2 = Intermediate, 3 = Advanced
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-controller="HR" asp-action="Index" class="btn btn-secondary mt-4">Back to HR Dashboard</a>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // ===== Bar chart data from Razor model =====
+    const competenceLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CompetenceLabels));
+    const competenceCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CompetenceCounts));
+
+    const ctx = document.getElementById('barChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: competenceLabels,
+            datasets: [{
+                label: 'Employees',
+                data: competenceCounts
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { precision: 0 } }
+            }
+        }
+    });
+
+    // ===== Heatmap coloring (simple) =====
+    // 0 = white, 1 = light, 2 = medium, 3 = dark
+    document.querySelectorAll('.heat-cell').forEach(cell => {
+        const val = parseInt(cell.dataset.val);
+
+        if (val === 0) cell.style.backgroundColor = "#ffffff";
+        if (val === 1) cell.style.backgroundColor = "#dbeafe";  // light
+        if (val === 2) cell.style.backgroundColor = "#93c5fd";  // medium
+        if (val === 3) cell.style.backgroundColor = "#2563eb";  // dark
+
+        if (val >= 2) cell.style.color = "#0f172a";
+        if (val === 3) cell.style.color = "#ffffff";
+    });
+</script>

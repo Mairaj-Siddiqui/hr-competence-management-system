@@ -1,18 +1,19 @@
-﻿using System.Linq;                                   // Gives us LINQ methods like Count(), GroupBy(), Select()
-using System.Threading.Tasks;                       // Needed for async/await and Task<IActionResult>
-using HRProject.Data;                               // To access ApplicationDbContext (your EF Core DbContext)
-using HRProject.Models;                             // To use ApplicationUser and HRDashboardViewModel
-using Microsoft.AspNetCore.Authorization;           // For the [Authorize] attribute
-using Microsoft.AspNetCore.Identity;                // For UserManager<ApplicationUser>
-using Microsoft.AspNetCore.Mvc;                     // For Controller and IActionResult
-using Microsoft.EntityFrameworkCore;                // For ToListAsync()
+﻿using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using HRProject.Data;
+using HRProject.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace HRProject.Controllers                      // Same namespace pattern as other controllers
+namespace HRProject.Controllers
 {
     /// <summary>
-    /// This controller contains actions that are intended for the HR role.
+    /// Controller for all HR-related dashboards, analysis and reports.
     /// </summary>
-    ///[Authorize(Roles = "Admin,HR")]                 // Keep commented for now (as you requested)
+    [Authorize(Roles = "Admin,HR")] // keep enabled/disabled as needed
     public class HRController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,9 +28,9 @@ namespace HRProject.Controllers                      // Same namespace pattern a
             _userManager = userManager;
         }
 
-        /// <summary>
-        /// Main HR Dashboard page with KPI stats.
-        /// </summary>
+        // =====================================================
+        // HR DASHBOARD
+        // =====================================================
         public async Task<IActionResult> Index()
         {
             var totalEmployees = _userManager.Users.Count();
@@ -68,39 +69,33 @@ namespace HRProject.Controllers                      // Same namespace pattern a
             return View(viewModel);
         }
 
-        /// <summary>
-        /// HR view: list all employees who have ZERO competences assigned.
-        /// This supports the "Users Without Any Competence" KPI card click.
-        /// </summary>
+        // =====================================================
+        // USERS WITHOUT COMPETENCES
+        // =====================================================
         [HttpGet]
         public async Task<IActionResult> EmployeesWithoutCompetences()
         {
-            // 1) Get all user IDs that already have at least one competence
             var userIdsWithCompetences = await _context.UserCompetences
                 .Select(uc => uc.UserId)
                 .Distinct()
                 .ToListAsync();
 
-            // 2) Get users where their Id is NOT in that list
             var usersWithoutCompetences = await _userManager.Users
                 .Where(u => !userIdsWithCompetences.Contains(u.Id))
                 .OrderBy(u => u.Email)
                 .ToListAsync();
 
-            // 3) Send the list to the view
             return View(usersWithoutCompetences);
         }
 
-        /// <summary>
-        /// Shows all users who have a specific competence (clicked from HR Dashboard).
-        /// </summary>
+        // =====================================================
+        // USERS BY COMPETENCE
+        // =====================================================
         [HttpGet]
         public async Task<IActionResult> CompetenceUsers(string competenceName)
         {
             if (string.IsNullOrWhiteSpace(competenceName))
-            {
                 return RedirectToAction(nameof(Index));
-            }
 
             var usersWithCompetence = await _context.UserCompetences
                 .Include(uc => uc.User)
@@ -110,17 +105,15 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                 .ToListAsync();
 
             ViewBag.CompetenceName = competenceName;
-
             return View(usersWithCompetence);
         }
 
-        // ===============================
-        // HR Skill Gap - Overview Screen
-        // ===============================
+        // =====================================================
+        // HR SKILL GAP – OVERVIEW
+        // =====================================================
         [HttpGet]
         public async Task<IActionResult> SkillGap()
         {
-            // 1) Demand: group project requirements by competence
             var demand = await _context.ProjectRequirements
                 .GroupBy(r => r.CompetenceId)
                 .Select(g => new
@@ -132,7 +125,6 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                 })
                 .ToListAsync();
 
-            // 2) Supply: group user competences by competence
             var supply = await _context.UserCompetences
                 .GroupBy(uc => uc.CompetenceId)
                 .Select(g => new
@@ -142,14 +134,11 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                 })
                 .ToListAsync();
 
-            // 3) Join with competence catalog for names
             var competences = await _context.Competences
                 .Select(c => new { c.Id, c.Name })
                 .ToListAsync();
 
-            // Build quick lookup dictionaries
             var supplyDict = supply.ToDictionary(x => x.CompetenceId, x => x.EmployeesAvailable);
-
             var rows = new List<HRSkillGapRowViewModel>();
 
             foreach (var d in demand)
@@ -161,10 +150,10 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                     ? supplyDict[d.CompetenceId]
                     : 0;
 
-                string status;
-                if (d.ProjectsRequiring > employeesAvailable) status = "GAP";
-                else if (d.ProjectsRequiring == employeesAvailable) status = "TIGHT";
-                else status = "OK";
+                string status =
+                    d.ProjectsRequiring > employeesAvailable ? "GAP" :
+                    d.ProjectsRequiring == employeesAvailable ? "TIGHT" :
+                    "OK";
 
                 rows.Add(new HRSkillGapRowViewModel
                 {
@@ -178,18 +167,12 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                 });
             }
 
-            // KPI Cards
-            var totalProjectRequirements = await _context.ProjectRequirements.CountAsync();
-            var uniqueRequiredCompetences = demand.Count;
-            var competencesWithGaps = rows.Count(r => r.Status == "GAP");
-            var criticalCompetences = rows.Count(r => r.EmployeesAvailable <= 1 && r.ProjectsRequiring > 0);
-
             var vm = new HRSkillGapOverviewViewModel
             {
-                TotalProjectRequirements = totalProjectRequirements,
-                UniqueRequiredCompetences = uniqueRequiredCompetences,
-                CompetencesWithGaps = competencesWithGaps,
-                CriticalCompetences = criticalCompetences,
+                TotalProjectRequirements = await _context.ProjectRequirements.CountAsync(),
+                UniqueRequiredCompetences = demand.Count,
+                CompetencesWithGaps = rows.Count(r => r.Status == "GAP"),
+                CriticalCompetences = rows.Count(r => r.EmployeesAvailable <= 1 && r.ProjectsRequiring > 0),
                 Rows = rows
                     .OrderByDescending(r => r.Status == "GAP")
                     .ThenByDescending(r => r.ProjectsRequiring)
@@ -200,19 +183,16 @@ namespace HRProject.Controllers                      // Same namespace pattern a
             return View(vm);
         }
 
-        // ==================================
-        // HR Skill Gap - Details per skill
-        // ==================================
+        // =====================================================
+        // HR SKILL GAP – DETAILS
+        // =====================================================
         [HttpGet]
         public async Task<IActionResult> SkillGapDetails(int competenceId)
         {
             var competence = await _context.Competences.FirstOrDefaultAsync(c => c.Id == competenceId);
             if (competence == null)
-            {
                 return RedirectToAction(nameof(SkillGap));
-            }
 
-            // Demand: which projects require this competence?
             var projectDemand = await _context.ProjectRequirements
                 .Include(r => r.Project)
                 .Where(r => r.CompetenceId == competenceId)
@@ -224,16 +204,13 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                     MinLevel = g.Max(x => x.MinLevel),
                     MinYears = g.Max(x => x.MinYearsOfExperience)
                 })
-                .OrderBy(x => x.ProjectName)
                 .ToListAsync();
 
-            // Supply: which employees have it, and at what level?
             var employeeSupply = await _context.UserCompetences
                 .Include(uc => uc.User)
                 .Where(uc => uc.CompetenceId == competenceId)
                 .OrderByDescending(uc => uc.Level)
                 .ThenByDescending(uc => uc.YearsOfExperience)
-                .ThenBy(uc => uc.User.Email)
                 .Select(uc => new HRSkillGapEmployeeSupplyRow
                 {
                     FullName = uc.User.FullName ?? "",
@@ -245,33 +222,116 @@ namespace HRProject.Controllers                      // Same namespace pattern a
                 })
                 .ToListAsync();
 
-            var projectsRequiring = projectDemand.Count;
-            var employeesAvailable = employeeSupply.Count;
-
-            var summary = $"'{competence.Name}' is required in {projectsRequiring} project(s). " +
-                          $"Currently, {employeesAvailable} employee(s) have this competence.";
-
-            if (employeesAvailable < projectsRequiring)
-                summary += " There is a GAP risk. Consider training or recruitment.";
-            else if (employeesAvailable == projectsRequiring)
-                summary += " This is TIGHT (just enough). Consider backup resources.";
-            else
-                summary += " Supply looks OK.";
-
             var vm = new HRSkillGapDetailsViewModel
             {
                 CompetenceId = competence.Id,
                 CompetenceName = competence.Name ?? "",
                 ProjectDemand = projectDemand,
                 EmployeeSupply = employeeSupply,
-                ProjectsRequiring = projectsRequiring,
-                EmployeesAvailable = employeesAvailable,
-                SummaryMessage = summary
+                ProjectsRequiring = projectDemand.Count,
+                EmployeesAvailable = employeeSupply.Count,
+                SummaryMessage = $"'{competence.Name}' required in {projectDemand.Count} project(s), " +
+                                 $"{employeeSupply.Count} employee(s) available."
             };
 
             return View(vm);
         }
 
+        // =====================================================
+        // HR REPORTS – BAR CHART + HEATMAP
+        // =====================================================
+        [HttpGet]
+        public async Task<IActionResult> Reports()
+        {
+            var competenceDistribution = await _context.UserCompetences
+                .Include(uc => uc.Competence)
+                .GroupBy(uc => uc.Competence.Name)
+                .Select(g => new
+                {
+                    Competence = g.Key,
+                    Users = g.Select(x => x.UserId).Distinct().Count()
+                })
+                .OrderByDescending(x => x.Users)
+                .ToListAsync();
+
+            var users = await _context.Users.OrderBy(u => u.FullName).ToListAsync();
+            var competences = await _context.Competences.OrderBy(c => c.Name).ToListAsync();
+            var userCompetences = await _context.UserCompetences.ToListAsync();
+
+            var matrix = new List<List<int>>();
+
+            foreach (var user in users)
+            {
+                var row = new List<int>();
+
+                foreach (var comp in competences)
+                {
+                    var match = userCompetences
+                        .FirstOrDefault(uc => uc.UserId == user.Id && uc.CompetenceId == comp.Id);
+
+                    row.Add(match == null ? 0 : (int)match.Level);
+                }
+
+                matrix.Add(row);
+            }
+
+            var vm = new HRChartsViewModel
+            {
+                CompetenceLabels = competenceDistribution.Select(x => x.Competence).ToList(),
+                CompetenceCounts = competenceDistribution.Select(x => x.Users).ToList(),
+                EmployeeLabels = users.Select(u => u.FullName ?? u.Email).ToList(),
+                HeatmapCompetenceLabels = competences.Select(c => c.Name).ToList(),
+                HeatmapMatrix = matrix
+            };
+
+            return View(vm);
+        }
+
+        // =====================================================
+        // EXPORT – TEAM SKILLS OVERVIEW (CSV / Excel)
+        // =====================================================
+        [HttpGet]
+        public async Task<IActionResult> ExportTeamSkillsCsv()
+        {
+            var data = await _context.UserCompetences
+                .Include(uc => uc.User)
+                .Include(uc => uc.Competence)
+                .OrderBy(uc => uc.User.Email)
+                .ThenBy(uc => uc.Competence.Name)
+                .ToListAsync();
+
+            var csv = new System.Text.StringBuilder();
+            csv.AppendLine("FullName;Email;JobTitle;AvailabilityPercent;Competence;Level;YearsOfExperience");
+
+
+            foreach (var row in data)
+            {
+                var fullName = EscapeCsv(row.User?.FullName);
+                var email = EscapeCsv(row.User?.Email);
+                var jobTitle = EscapeCsv(row.User?.JobTitle);
+                var availability = row.User?.AvailabilityPercent ?? 0;
+
+                var competence = EscapeCsv(row.Competence?.Name);
+                var level = row.Level.ToString();
+                var years = row.YearsOfExperience?.ToString() ?? "";
+
+                csv.AppendLine($"{fullName};{email};{jobTitle};{availability};{competence};{level};{years}");
+
+            }
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+            return File(bytes, "text/csv", "HR_TeamSkills.csv");
+        }
+
+        // Helper for CSV formatting
+        private static string EscapeCsv(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return "";
+            value = value.Replace("\"", "\"\"");
+            if (value.Contains(",") || value.Contains("\n") || value.Contains("\r"))
+                return $"\"{value}\"";
+            return value;
+        }
 
     }
 }
