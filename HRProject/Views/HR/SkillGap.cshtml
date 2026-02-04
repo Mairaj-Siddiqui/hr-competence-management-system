@@ -6,23 +6,25 @@
 @{
     ViewData["Title"] = "Skill Gap Overview";
 
-    // Demo mode if no real rows exist
+    // Use dummy data only if no real rows exist
     bool useDummyData = Model.Rows == null || !Model.Rows.Any();
 
-    // Chart data (real if available, otherwise dummy)
+    // Chart labels
     var labels = useDummyData
         ? new List<string> { "C#", "Azure", "SQL", "React" }
         : Model.Rows.Select(r => r.CompetenceName).ToList();
 
+    // Demand = projects
     var demand = useDummyData
         ? new List<int> { 4, 3, 2, 5 }
         : Model.Rows.Select(r => r.ProjectsRequiring).ToList();
 
+    // Supply = employees
     var supply = useDummyData
         ? new List<int> { 2, 4, 1, 3 }
         : Model.Rows.Select(r => r.EmployeesAvailable).ToList();
 
-    // Status summary values (real if available, otherwise dummy)
+    // Status counts
     var gapCount = useDummyData ? 2 : Model.Rows.Count(r => r.Status == "GAP");
     var tightCount = useDummyData ? 1 : Model.Rows.Count(r => r.Status == "TIGHT");
     var okCount = useDummyData ? 1 : Model.Rows.Count(r => r.Status == "OK");
@@ -31,144 +33,52 @@
 <div class="container mt-4">
     <h1 class="mb-4">HR – Skill Gap Overview</h1>
 
-    <!-- KPI Cards -->
-    <div class="row">
-        <div class="col-md-3 mb-3">
-            <div class="card text-bg-primary">
-                <div class="card-body">
-                    <h6 class="card-title">Total Project Requirements</h6>
-                    <p class="fs-3 fw-bold mb-0">@Model.TotalProjectRequirements</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-bg-success">
-                <div class="card-body">
-                    <h6 class="card-title">Unique Required Competences</h6>
-                    <p class="fs-3 fw-bold mb-0">@Model.UniqueRequiredCompetences</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-bg-warning">
-                <div class="card-body">
-                    <h6 class="card-title">Competences With Gaps</h6>
-                    <p class="fs-3 fw-bold mb-0">@Model.CompetencesWithGaps</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-bg-danger">
-                <div class="card-body">
-                    <h6 class="card-title">Critical (≤ 1 Employee)</h6>
-                    <p class="fs-3 fw-bold mb-0">@Model.CriticalCompetences</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Demo mode notice -->
-    @if (useDummyData)
-    {
-        <div class="alert alert-warning mt-3">
-            <strong>Demo mode:</strong> Showing sample data for visualization purposes only.
-            Real data will appear once project requirements and employee competences are fully populated.
-        </div>
-    }
-
-    <!-- Risk / Shortage Charts -->
-    <div class="card shadow-sm mt-4">
+    <!-- Risk / Shortage Analysis -->
+    <div class="card shadow-sm mt-3">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h3 class="mb-0">Risk / Shortage Analysis</h3>
-                <small class="text-muted">Demand = Projects requiring skill, Supply = Employees with skill</small>
+                <small class="text-muted">
+                    Demand = Projects requiring skill · Supply = Employees with skill
+                </small>
             </div>
 
-            <div class="row g-3 mt-2">
+            <div class="row g-4 mt-2">
+                <!-- Bar chart -->
                 <div class="col-lg-8">
                     <h6 class="text-muted mb-2">Demand vs Supply per Competence</h6>
                     <canvas id="skillGapBarChart" height="120"></canvas>
                 </div>
 
+                <!-- Donut chart -->
                 <div class="col-lg-4">
                     <h6 class="text-muted mb-2">Status Summary</h6>
                     <canvas id="skillGapStatusChart" height="160"></canvas>
 
                     <div class="mt-3">
-                        <small class="text-muted d-block"><b>GAP</b>: Demand &gt; Supply (shortage)</small>
-                        <small class="text-muted d-block"><b>TIGHT</b>: Demand = Supply (risk / no backup)</small>
-                        <small class="text-muted d-block"><b>OK</b>: Supply &gt; Demand</small>
+                        <small class="text-muted d-block">
+                            <b>GAP</b>: Demand &gt; Supply (shortage)
+                        </small>
+                        <small class="text-muted d-block">
+                            <b>TIGHT</b>: Demand = Supply (risk / no backup)
+                        </small>
+                        <small class="text-muted d-block">
+                            <b>OK</b>: Supply &gt; Demand
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main table -->
-    <div class="mt-4">
-        <h3>Competence Demand vs Supply</h3>
-
-        @if (!useDummyData && Model.Rows != null && Model.Rows.Any())
-        {
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Competence</th>
-                        <th>Projects Requiring</th>
-                        <th>Max Min Level</th>
-                        <th>Max Min Years</th>
-                        <th>Employees Available</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var row in Model.Rows)
-                    {
-                        <tr>
-                            <td>@row.CompetenceName</td>
-                            <td>@row.ProjectsRequiring</td>
-                            <td>@row.MaxMinLevelRequired</td>
-                            <td>@row.MaxMinYearsRequired</td>
-                            <td>@row.EmployeesAvailable</td>
-                            <td>
-                                @if (row.Status == "GAP")
-                                {
-                                    <span class="badge bg-danger">GAP</span>
-                                }
-                                else if (row.Status == "TIGHT")
-                                {
-                                    <span class="badge bg-warning text-dark">TIGHT</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success">OK</span>
-                                }
-                            </td>
-                            <td>
-                                <a asp-controller="HR"
-                                   asp-action="SkillGapDetails"
-                                   asp-route-competenceId="@row.CompetenceId"
-                                   class="btn btn-sm btn-primary">
-                                    View Details
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <div class="alert alert-info">
-                No project requirements found yet. Ask Project Manager to add requirements first.
-                (Charts above are shown in demo mode for visualization.)
-            </div>
-        }
-    </div>
+    <!-- Optional explanatory note -->
+    @if (useDummyData)
+    {
+        <div class="alert alert-info mt-3">
+            Charts are shown using sample data for visualization purposes.
+            Real values will be displayed once project requirements and employee competences are fully populated.
+        </div>
+    }
 
     <a asp-controller="HR" asp-action="Index" class="btn btn-secondary mt-3">
         Back to HR Dashboard
@@ -176,11 +86,9 @@
 </div>
 
 @section Scripts {
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Data from Razor model (real or dummy)
         const labels = @Html.Raw(JsonSerializer.Serialize(labels));
         const demand = @Html.Raw(JsonSerializer.Serialize(demand));
         const supply = @Html.Raw(JsonSerializer.Serialize(supply));
@@ -189,46 +97,39 @@
         const tightCount = @tightCount;
         const okCount = @okCount;
 
-        // Debug (optional)
-        console.log("SkillGap labels:", labels);
-
-        // Render charts safely
-        const barCanvas = document.getElementById('skillGapBarChart');
-        const donutCanvas = document.getElementById('skillGapStatusChart');
-
-        if (barCanvas && donutCanvas && labels.length > 0) {
-
-            // Demand vs Supply (grouped bar chart)
-            new Chart(barCanvas, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Demand (Projects)', data: demand },
-                        { label: 'Supply (Employees)', data: supply }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0 } }
+        // Bar chart
+        new Chart(document.getElementById('skillGapBarChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Demand (Projects)', data: demand },
+                    { label: 'Supply (Employees)', data: supply }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
                     }
                 }
-            });
+            }
+        });
 
-            // Status summary (donut)
-            new Chart(donutCanvas, {
-                type: 'doughnut',
-                data: {
-                    labels: ['GAP', 'TIGHT', 'OK'],
-                    datasets: [{
-                        data: [gapCount, tightCount, okCount]
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-        }
+        // Donut chart
+        new Chart(document.getElementById('skillGapStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['GAP', 'TIGHT', 'OK'],
+                datasets: [{
+                    data: [gapCount, tightCount, okCount]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
     </script>
 }
