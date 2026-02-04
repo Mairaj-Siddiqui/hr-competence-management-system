@@ -109,70 +109,149 @@ namespace HRProject.Controllers
         }
 
         // =====================================================
-        // HR SKILL GAP – OVERVIEW
+        // HR SKILL GAP – OVERVIEW (REAL DATA OR DEMO MODE)
         // =====================================================
         [HttpGet]
         public async Task<IActionResult> SkillGap()
         {
-            var demand = await _context.ProjectRequirements
-                .GroupBy(r => r.CompetenceId)
-                .Select(g => new
-                {
-                    CompetenceId = g.Key,
-                    ProjectsRequiring = g.Select(x => x.ProjectId).Distinct().Count(),
-                    MaxMinLevel = g.Max(x => x.MinLevel),
-                    MaxMinYears = g.Max(x => x.MinYearsOfExperience)
-                })
-                .ToListAsync();
+            // DEMO MODE = if no structured project requirements exist yet
+            bool useDummyData = !await _context.ProjectRequirements.AnyAsync();
 
-            var supply = await _context.UserCompetences
-                .GroupBy(uc => uc.CompetenceId)
-                .Select(g => new
-                {
-                    CompetenceId = g.Key,
-                    EmployeesAvailable = g.Select(x => x.UserId).Distinct().Count()
-                })
-                .ToListAsync();
-
-            var competences = await _context.Competences
-                .Select(c => new { c.Id, c.Name })
-                .ToListAsync();
-
-            var supplyDict = supply.ToDictionary(x => x.CompetenceId, x => x.EmployeesAvailable);
             var rows = new List<HRSkillGapRowViewModel>();
 
-            foreach (var d in demand)
+            int totalProjectRequirements = 0;
+            int uniqueRequiredCompetences = 0;
+
+            if (useDummyData)
             {
-                var comp = competences.FirstOrDefault(c => c.Id == d.CompetenceId);
-                var competenceName = comp?.Name ?? $"CompetenceId {d.CompetenceId}";
-
-                var employeesAvailable = supplyDict.ContainsKey(d.CompetenceId)
-                    ? supplyDict[d.CompetenceId]
-                    : 0;
-
-                string status =
-                    d.ProjectsRequiring > employeesAvailable ? "GAP" :
-                    d.ProjectsRequiring == employeesAvailable ? "TIGHT" :
-                    "OK";
-
-                rows.Add(new HRSkillGapRowViewModel
+                // -------------------------------------------------
+                // DUMMY DATA (matches your charts + table)
+                // IMPORTANT: This is ONLY for presentation/demo.
+                // -------------------------------------------------
+                rows = new List<HRSkillGapRowViewModel>
                 {
-                    CompetenceId = d.CompetenceId,
-                    CompetenceName = competenceName,
-                    ProjectsRequiring = d.ProjectsRequiring,
-                    MaxMinLevelRequired = d.MaxMinLevel,
-                    MaxMinYearsRequired = d.MaxMinYears,
-                    EmployeesAvailable = employeesAvailable,
-                    Status = status
-                });
+                    new HRSkillGapRowViewModel
+                    {
+                        CompetenceId = 1,
+                        CompetenceName = "C#",
+                        ProjectsRequiring = 4,
+                        MaxMinLevelRequired = (int)CompetenceLevel.Intermediate,
+                        MaxMinYearsRequired = 2,
+                        EmployeesAvailable = 2,
+                        Status = "GAP"
+                    },
+                    new HRSkillGapRowViewModel
+                    {
+                        CompetenceId = 2,
+                        CompetenceName = "Azure",
+                        ProjectsRequiring = 3,
+                        MaxMinLevelRequired = (int)CompetenceLevel.Intermediate,
+                        MaxMinYearsRequired = 2,
+                        EmployeesAvailable = 4,
+                        Status = "OK"
+                    },
+                    new HRSkillGapRowViewModel
+                    {
+                        CompetenceId = 3,
+                        CompetenceName = "SQL",
+                        ProjectsRequiring = 2,
+                        MaxMinLevelRequired = (int)CompetenceLevel.Basic,
+                        MaxMinYearsRequired = 1,
+                        EmployeesAvailable = 1,
+                        Status = "GAP"
+                    },
+                    new HRSkillGapRowViewModel
+                    {
+                        CompetenceId = 4,
+                        CompetenceName = "React",
+                        ProjectsRequiring = 5,
+                        MaxMinLevelRequired = (int)CompetenceLevel.Basic,
+                        MaxMinYearsRequired = 1,
+                        EmployeesAvailable = 3,
+                        Status = "GAP"
+                    }
+                };
+
+                // KPI values from dummy rows
+                totalProjectRequirements = rows.Sum(r => r.ProjectsRequiring);
+                uniqueRequiredCompetences = rows.Count;
             }
+            else
+            {
+                // -------------------------------------------------
+                // REAL DATA (existing logic)
+                // -------------------------------------------------
+                var demand = await _context.ProjectRequirements
+                    .GroupBy(r => r.CompetenceId)
+                    .Select(g => new
+                    {
+                        CompetenceId = g.Key,
+                        ProjectsRequiring = g.Select(x => x.ProjectId).Distinct().Count(),
+                        MaxMinLevel = (int)g.Max(x => x.MinLevel),
+                        MaxMinYears = g.Max(x => x.MinYearsOfExperience)
+                    })
+                    .ToListAsync();
+
+                var supply = await _context.UserCompetences
+                    .GroupBy(uc => uc.CompetenceId)
+                    .Select(g => new
+                    {
+                        CompetenceId = g.Key,
+                        EmployeesAvailable = g.Select(x => x.UserId).Distinct().Count()
+                    })
+                    .ToListAsync();
+
+                var competences = await _context.Competences
+                    .Select(c => new { c.Id, c.Name })
+                    .ToListAsync();
+
+                var supplyDict = supply.ToDictionary(x => x.CompetenceId, x => x.EmployeesAvailable);
+
+                foreach (var d in demand)
+                {
+                    var comp = competences.FirstOrDefault(c => c.Id == d.CompetenceId);
+                    var competenceName = comp?.Name ?? $"CompetenceId {d.CompetenceId}";
+
+                    var employeesAvailable = supplyDict.ContainsKey(d.CompetenceId)
+                        ? supplyDict[d.CompetenceId]
+                        : 0;
+
+                    string status =
+                        d.ProjectsRequiring > employeesAvailable ? "GAP" :
+                        d.ProjectsRequiring == employeesAvailable ? "TIGHT" :
+                        "OK";
+
+                    rows.Add(new HRSkillGapRowViewModel
+                    {
+                        CompetenceId = d.CompetenceId,
+                        CompetenceName = competenceName,
+                        ProjectsRequiring = d.ProjectsRequiring,
+                        MaxMinLevelRequired = d.MaxMinLevel,
+                        MaxMinYearsRequired = d.MaxMinYears,
+                        EmployeesAvailable = employeesAvailable,
+                        Status = status
+                    });
+                }
+
+                totalProjectRequirements = await _context.ProjectRequirements.CountAsync();
+                uniqueRequiredCompetences = demand.Count;
+            }
+
+            // KPI Cards (works both for dummy and real data)
+            var competencesWithGaps = rows.Count(r => r.Status == "GAP");
+            var criticalCompetences = rows.Count(r => r.EmployeesAvailable <= 1 && r.ProjectsRequiring > 0);
 
             var vm = new HRSkillGapOverviewViewModel
             {
-                TotalProjectRequirements = await _context.ProjectRequirements.CountAsync(),
-                UniqueRequiredCompetences = demand.Count,
-                CompetencesWithGaps = rows.Count(r => r.Status == "GAP"),
-                CriticalCompetences = rows.Count(r => r.EmployeesAvailable <= 1 && r.ProjectsRequiring > 0),
+                // NOTE: These now match dummy mode AND real mode
+                TotalProjectRequirements = totalProjectRequirements,
+                UniqueRequiredCompetences = uniqueRequiredCompetences,
+                CompetencesWithGaps = competencesWithGaps,
+                CriticalCompetences = criticalCompetences,
+
+                // Recommended: add this bool to ViewModel (Step 2 if not exists)
+                UseDummyData = useDummyData,
+
                 Rows = rows
                     .OrderByDescending(r => r.Status == "GAP")
                     .ThenByDescending(r => r.ProjectsRequiring)
@@ -201,7 +280,7 @@ namespace HRProject.Controllers
                 {
                     ProjectId = g.Key.ProjectId,
                     ProjectName = g.Key.ProjectName ?? $"ProjectId {g.Key.ProjectId}",
-                    MinLevel = g.Max(x => x.MinLevel),
+                    MinLevel = (int)g.Max(x => x.MinLevel),
                     MinYears = g.Max(x => x.MinYearsOfExperience)
                 })
                 .ToListAsync();
@@ -303,7 +382,6 @@ namespace HRProject.Controllers
             var csv = new System.Text.StringBuilder();
             csv.AppendLine("FullName;Email;JobTitle;AvailabilityPercent;Competence;Level;YearsOfExperience");
 
-
             foreach (var row in data)
             {
                 var fullName = EscapeCsv(row.User?.FullName);
@@ -316,7 +394,6 @@ namespace HRProject.Controllers
                 var years = row.YearsOfExperience?.ToString() ?? "";
 
                 csv.AppendLine($"{fullName};{email};{jobTitle};{availability};{competence};{level};{years}");
-
             }
 
             var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
@@ -328,10 +405,12 @@ namespace HRProject.Controllers
         {
             if (string.IsNullOrWhiteSpace(value)) return "";
             value = value.Replace("\"", "\"\"");
-            if (value.Contains(",") || value.Contains("\n") || value.Contains("\r"))
+
+            // IMPORTANT: also handle semicolon since we use ; as delimiter
+            if (value.Contains(";") || value.Contains(",") || value.Contains("\n") || value.Contains("\r"))
                 return $"\"{value}\"";
+
             return value;
         }
-
     }
 }

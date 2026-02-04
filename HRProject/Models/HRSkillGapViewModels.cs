@@ -12,6 +12,9 @@ namespace HRProject.Models
         public int CompetencesWithGaps { get; set; }
         public int CriticalCompetences { get; set; } // only 0-1 employees available
 
+        // Demo mode flag (if no ProjectRequirements exist)
+        public bool UseDummyData { get; set; }
+
         // Main table rows
         public List<HRSkillGapRowViewModel> Rows { get; set; } = new();
     }
