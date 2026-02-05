@@ -13,7 +13,6 @@ A web-based HR application designed to support decision-making for HR profession
 - ASP.NET Core MVC
 - Entity Framework Core
 - SQL Server
-- Chart.js
 - Azure DevOps (CI)
 - GitHub (Portfolio)
 
